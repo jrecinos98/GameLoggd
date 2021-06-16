@@ -1,4 +1,4 @@
-package com.challenge.kippo.ui.main
+package com.challenge.kippo.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.challenge.kippo.R
+import com.challenge.kippo.databinding.FragmentFavoriteBinding
+import com.challenge.kippo.databinding.FragmentTrendingBinding
+import com.challenge.kippo.ui.main.MainViewModel
 
-/**
- * A placeholder fragment containing a simple view.
- */
-class PlaceholderFragment : Fragment() {
-
+class FavoriteFragment : Fragment(){
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var favoriteBinding: FragmentFavoriteBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,12 +25,13 @@ class PlaceholderFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_trending, container, false)
- /*       val textView: TextView = root.findViewById(R.id.section_label)
-        pageViewModel.text.observe(this, Observer<String> {
-            textView.text = it
-        })
- */       return root
+        favoriteBinding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        /*       val textView: TextView = root.findViewById(R.id.section_label)
+               pageViewModel.text.observe(this, Observer<String> {
+                   textView.text = it
+               })
+        */
+        return favoriteBinding.root
     }
 
     companion object {
@@ -46,12 +46,14 @@ class PlaceholderFragment : Fragment() {
          * number.
          */
         @JvmStatic
-        fun newInstance(sectionNumber: Int): PlaceholderFragment {
-            return PlaceholderFragment().apply {
+        fun newInstance(sectionNumber: Int): TrendingFragment {
+
+            return TrendingFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SECTION_NUMBER, sectionNumber)
                 }
             }
         }
     }
+
 }

@@ -10,23 +10,27 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.challenge.kippo.databinding.ActivityMainBinding
-import com.challenge.kippo.ui.main.SectionsPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mchat.recinos.Activities.Home.Adapters.HomePagerAdapter
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityBinding: ActivityMainBinding
+    private lateinit var homePagerAdapter: HomePagerAdapter
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(mainActivityBinding.root);
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-        mainActivityBinding.viewPager.adapter = sectionsPagerAdapter
+        homePagerAdapter = HomePagerAdapter(this, supportFragmentManager)
+        mainActivityBinding.viewPager.adapter = homePagerAdapter
         mainActivityBinding
                 .bottomNavigationView
                 .setOnNavigationItemSelectedListener {
                     item-> onNavigationItemSelected(item)
                 }
+
+        mainActivityBinding.viewPager.setOnScrollChangeListener()
+        //Necessary to remove the tint that changed icon color.
         mainActivityBinding.bottomNavigationView.itemIconTintList = null
 
 
@@ -46,14 +50,18 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.trending -> {
                 Log.d("MAIN_ACTIVITY", "Clicked: "+ item.title)
+                mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.TRENDING_FRAG_INDEX, true)
                 true
             }
             R.id.search -> {
                 Log.d("MAIN_ACTIVITY", "Clicked: "+ item.title)
+
+                mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.SEARCH_FRAG_INDEX, true)
                 true
             }
             R.id.favorite -> {
                 Log.d("MAIN_ACTIVITY", "Clicked: "+ item.title)
+                mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.FAVORITE_FRAG_INDEX, true)
                 true
             }
             else -> false

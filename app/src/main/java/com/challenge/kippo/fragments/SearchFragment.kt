@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.challenge.kippo.databinding.FragmentTrendingBinding
+import com.challenge.kippo.databinding.FragmentFavoriteBinding
+import com.challenge.kippo.databinding.FragmentSearchBinding
 import com.challenge.kippo.ui.main.MainViewModel
 
-class TrendingFragment:Fragment()  {
+class SearchFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var trendingBinding: FragmentTrendingBinding
+    private lateinit var searchBinding: FragmentSearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,14 +25,13 @@ class TrendingFragment:Fragment()  {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        trendingBinding = FragmentTrendingBinding.inflate(inflater, container, false)
+        searchBinding = FragmentSearchBinding.inflate(inflater, container, false)
         /*       val textView: TextView = root.findViewById(R.id.section_label)
                pageViewModel.text.observe(this, Observer<String> {
                    textView.text = it
                })
         */
-        trendingBinding.toolbar
-        return trendingBinding.root
+        return searchBinding.root
     }
 
     companion object {
@@ -55,5 +55,4 @@ class TrendingFragment:Fragment()  {
             }
         }
     }
-
 }
