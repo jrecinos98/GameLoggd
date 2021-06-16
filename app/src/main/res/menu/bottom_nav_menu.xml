@@ -3,13 +3,13 @@
     <item
         android:id="@+id/trending"
         android:title="@string/trending"
-        android:icon="@drawable/ic_trending_tab_unselected"/>
+        android:icon="@drawable/selector_trending"/>
     <item
         android:id="@+id/search"
         android:title="@string/search"
-        android:icon="@drawable/ic_search_tab_unselected"/>
+        android:icon="@drawable/selector_search"/>
     <item
         android:id="@+id/favorite"
         android:title="@string/favorite"
-        android:icon="@drawable/ic_favorite_tab_unselected"/>
+        android:icon="@drawable/selector_favorite"/>
 </menu>

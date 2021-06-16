@@ -5,4 +5,19 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
+
+    <!-- Toolbar -->
+    <style name="Toolbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <!-- Toolbar Background Color -->
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="Toolbar.PopupMenu" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 </resources>
