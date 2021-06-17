@@ -11,10 +11,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.challenge.kippo.R
+import com.challenge.kippo.backend.storage.entities.GameCard
 import com.challenge.kippo.databinding.CustomGameCardBinding
-import com.challenge.kippo.databinding.ListItemBinding
 
-class GameCardAdapter (private val list: List<String>): RecyclerView.Adapter<GameCardAdapter.GameCardHolder>(){
+class GameCardAdapter (private val list: ArrayList<String>): RecyclerView.Adapter<GameCardAdapter.GameCardHolder>(){
 
 
     class GameCardHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -69,7 +69,13 @@ class GameCardAdapter (private val list: List<String>): RecyclerView.Adapter<Gam
 
         return list.size
     }
-
+    fun setGames(games: List<GameCard>){
+        list.apply {
+            clear()
+            //addAll(games)
+        }
+        notifyDataSetChanged()
+    }
     companion object{
         public const val GRID_COL_COUNT = 2
 

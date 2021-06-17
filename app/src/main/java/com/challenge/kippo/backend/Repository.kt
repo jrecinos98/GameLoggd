@@ -1,4 +1,7 @@
 package com.challenge.kippo.backend
 
-class Repository {
+import com.challenge.kippo.backend.networking.ApiHelper
+
+class Repository (private val apiHelper: ApiHelper) {
+    suspend fun getgames() = apiHelper.getGames()
 }

@@ -6,9 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.challenge.kippo.databinding.FragmentFavoriteBinding
 import com.challenge.kippo.databinding.FragmentSearchBinding
-import com.challenge.kippo.ui.main.MainViewModel
+import com.challenge.kippo.backend.view_model.MainViewModel
 
 class SearchFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
@@ -16,8 +15,8 @@ class SearchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java).apply {
-            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java).apply {
+            //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
         }
     }
 

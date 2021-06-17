@@ -1,45 +1,33 @@
 package com.challenge.kippo.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.challenge.kippo.backend.storage.entities.GameCard
 import com.challenge.kippo.databinding.FragmentTrendingBinding
 import com.challenge.kippo.ui.main.GameCardAdapter
-import com.challenge.kippo.ui.main.ListAdapter
-import com.challenge.kippo.ui.main.MainViewModel
+import com.challenge.kippo.backend.view_model.MainViewModel
+import com.challenge.kippo.util.Status
+import java.util.ArrayList
 
 class TrendingFragment() :Fragment()  {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var trendingBinding: FragmentTrendingBinding
     private lateinit var gameCardAdapter: GameCardAdapter
-    private lateinit var movieAdapter: ListAdapter
-    val list = listOf("a", "b", "c", "d", "e", "f", "g" , "h")
-    private val mNicolasCageMovies = listOf(
-        MainFragment.Movie("Raising Arizona", 1987),
-        MainFragment.Movie("Vampire's Kiss", 1988),
-        MainFragment.Movie("Con Air", 1997),
-        MainFragment.Movie("Gone in 60 Seconds", 1997),
-        MainFragment.Movie("National Treasure", 2004),
-        MainFragment.Movie("The Wicker Man", 2006),
-        MainFragment.Movie("Ghost Rider", 2007),
-        MainFragment.Movie("Knowing", 2009)
-    )
-
+    //TODO remove
+    private val list = arrayListOf<String>("a", "b", "c", "d", "e", "f", "g" , "h")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java).apply {
-            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java).apply {
+            //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
         }
         gameCardAdapter = GameCardAdapter(list)
-        movieAdapter = ListAdapter(mNicolasCageMovies)
         retainInstance = true
     }
 
@@ -53,13 +41,8 @@ class TrendingFragment() :Fragment()  {
             layoutManager =  GridLayoutManager(context, GRID_COL_COUNT)
             adapter = gameCardAdapter
         }
-        if(trendingBinding.trendingRecyclerView.adapter  != null){
+        //observeGames()
 
-            Log.d("TRENDING_FRAGMENT", "Value: " + trendingBinding.trendingRecyclerView.adapter.toString())
-        }
-        if(trendingBinding.trendingRecyclerView.adapter == null){
-            Log.d("TRENDING_FRAGMENT", "Adapter null")
-        }
         return trendingBinding.root
 
     }
@@ -72,6 +55,22 @@ class TrendingFragment() :Fragment()  {
         super.onStart()
         Log.d("TRENDING", "" +
                 trendingBinding.trendingRecyclerView.isAttachedToWindow)
+    }
+
+    private fun observeGames(){
+        mainViewModel.getGames().observe(this, Observer {
+            it?.let { resource ->
+                when (resource.status){
+                    Status.SUCCESS -> {
+                        resource.data?.let {
+                                list: List<GameCard> -> gameCardAdapter.setGames(list)
+                        }
+                    }
+                }
+
+            }
+        })
+
     }
     companion object {
         /**

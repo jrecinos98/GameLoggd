@@ -2,41 +2,55 @@ package com.challenge.kippo
 
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
+import com.challenge.kippo.backend.networking.ApiHelper
+import com.challenge.kippo.backend.networking.RetrofitBuilder
+import com.challenge.kippo.backend.storage.entities.GameCard
 import com.challenge.kippo.databinding.ActivityMainBinding
+import com.challenge.kippo.backend.view_model.MainViewModel
+import com.challenge.kippo.backend.view_model.ViewModelFactory
+import com.challenge.kippo.util.Status
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mchat.recinos.Activities.Home.Adapters.HomePagerAdapter
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityBinding: ActivityMainBinding
     private lateinit var homePagerAdapter: HomePagerAdapter
-    
+    private lateinit var viewModel : MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(mainActivityBinding.root);
+        val apiHelper = ApiHelper(RetrofitBuilder.igdbService)
+        //Creates a MainViewModel through its designated Factory
+        viewModel = ViewModelProvider(this, ViewModelFactory(apiHelper)).get()
+        setUpUI()
+        setUpObservers()
 
+    }
+    private fun setUpUI(){
         homePagerAdapter = HomePagerAdapter(this, supportFragmentManager)
         //Necessary to remove the tint that changes icon color.
         mainActivityBinding.bottomNavigationView.itemIconTintList = null
 
         mainActivityBinding.viewPager.adapter = homePagerAdapter
         mainActivityBinding
-                .bottomNavigationView
-                .setOnNavigationItemSelectedListener (onNavigationItemSelected())
+            .bottomNavigationView
+            .setOnNavigationItemSelectedListener (onNavigationItemSelected())
 
         mainActivityBinding
-                .viewPager
-                .addOnPageChangeListener(onPageChange())
-    }
+            .viewPager
+            .addOnPageChangeListener(onPageChange())
 
+    }
+    private fun setUpObservers(){
+
+    }
     /**
      * Returns an OnNavigationChangeListener which handles notifying the adapter to transition
      * from one fragment to another.
