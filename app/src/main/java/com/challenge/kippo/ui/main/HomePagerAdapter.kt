@@ -1,5 +1,6 @@
 package com.mchat.recinos.Activities.Home.Adapters
 
+import MainFragment
 import android.content.Context
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -25,7 +26,7 @@ class HomePagerAdapter(private val context: Context, fm: FragmentManager?) : Fra
     override fun getItem(position: Int): Fragment {
         return when(position){
             TRENDING_FRAG_INDEX -> TrendingFragment()
-            SEARCH_FRAG_INDEX -> SearchFragment()
+            SEARCH_FRAG_INDEX -> MainFragment()
             FAVORITE_FRAG_INDEX -> FavoriteFragment()
             else -> Fragment()
         }
