@@ -24,7 +24,8 @@ class HomePagerAdapter(private val context: Context, fm: FragmentManager?) : Fra
      */
     override fun getItem(position: Int): Fragment {
         return when(position){
-            TRENDING_FRAG_INDEX -> TrendingFragment()
+            //TODO pass in recyclerview adapters on newInstance
+            TRENDING_FRAG_INDEX -> TrendingFragment.newInstance()
             SEARCH_FRAG_INDEX -> SearchFragment()
             FAVORITE_FRAG_INDEX -> FavoriteFragment()
             else -> Fragment()

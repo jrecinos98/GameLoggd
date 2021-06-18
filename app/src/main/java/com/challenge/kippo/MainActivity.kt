@@ -4,17 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import com.challenge.kippo.backend.networking.ApiHelper
-import com.challenge.kippo.backend.networking.RetrofitBuilder
-import com.challenge.kippo.backend.storage.entities.GameCard
 import com.challenge.kippo.databinding.ActivityMainBinding
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.backend.view_model.ViewModelFactory
-import com.challenge.kippo.util.Status
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mchat.recinos.Activities.Home.Adapters.HomePagerAdapter
 
@@ -22,17 +17,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityBinding: ActivityMainBinding
     private lateinit var homePagerAdapter: HomePagerAdapter
     private lateinit var viewModel : MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(mainActivityBinding.root);
-        val apiHelper = ApiHelper(RetrofitBuilder.igdbService)
+        val apiHelper = ApiHelper(this)
         //Creates a MainViewModel through its designated Factory
-        viewModel = ViewModelProvider(this, ViewModelFactory(apiHelper)).get()
+        viewModel = ViewModelProvider(this, ViewModelFactory(this, apiHelper)).get()
+        viewModel.authenticate()
         setUpUI()
         setUpObservers()
 
     }
+
+    /**
+     * Sets up adapters and listeners to main activity views.
+     */
     private fun setUpUI(){
         homePagerAdapter = HomePagerAdapter(this, supportFragmentManager)
         //Necessary to remove the tint that changes icon color.

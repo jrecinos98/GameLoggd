@@ -1,13 +1,24 @@
 package com.challenge.kippo.backend.view_model
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.challenge.kippo.backend.Repository
+import com.challenge.kippo.backend.networking.requests.Games
+import com.challenge.kippo.backend.networking.responses.AuthResponse
 import com.challenge.kippo.util.Result
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class MainViewModel(private val repository: Repository) : ViewModel() {
 
     private val _index = MutableLiveData<Int>()
+
     val text: LiveData<String> = Transformations.map(_index) {
         "Hello world from section: $it"
     }
@@ -24,10 +35,52 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         emit(Result.loading(data = null))
         try {
             //Fetch the data and notify if it succeeds
-            emit(Result.success(data = repository.getgames()))
+            emit(Result.success(data = repository.getGames()))
         } catch (exception: Exception) {
             //Upon an exception the observers will be notified of failure and receive error message.
             emit(Result.error(data = null, message = exception.message ?: "Error Occurred!"))
         }
+    }
+
+    fun authenticate(){
+        Log.d("AUTHENTICATE", "Started")
+
+        GlobalScope.launch {
+            val response = repository.authenticate()
+            Log.d("AUTHENTICATE", "Received Response")
+
+            response.enqueue(object : Callback<AuthResponse> {
+                override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                    // Error logging in
+                }
+
+                override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                    val loginResponse = response.body()
+
+                    if (loginResponse?.authToken != null && loginResponse.tokenType == "bearer") {
+                        Log.d("AUTHENTICATE", loginResponse.authToken)
+                        launch {
+                            repository.storeAuthToken(loginResponse.authToken)
+                        }
+                    } else {
+                        // Error logging in
+                    }
+                }
+            })
+        }
+    }
+    fun fetchTrendingGames() : LiveData<List<Games>>{
+        //TODO
+        return MutableLiveData(listOf(Games( 0, "")))
+    }
+
+    fun fetchFavoriteGames() : LiveData<List<Games>>{
+        //TODO
+        return MutableLiveData(listOf(Games(0, "")))
+    }
+
+    fun search(game : String) : LiveData<List<Games>>{
+        //TODO
+        return MutableLiveData(listOf(Games(0, "")))
     }
 }

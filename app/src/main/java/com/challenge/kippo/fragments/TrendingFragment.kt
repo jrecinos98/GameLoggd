@@ -20,22 +20,22 @@ class TrendingFragment() :Fragment()  {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var trendingBinding: FragmentTrendingBinding
     private lateinit var gameCardAdapter: GameCardAdapter
+
     //TODO remove
     private val list = arrayListOf<String>("a", "b", "c", "d", "e", "f", "g" , "h")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java).apply {
-            //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-        }
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         gameCardAdapter = GameCardAdapter(list)
         retainInstance = true
     }
-
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         trendingBinding = FragmentTrendingBinding.inflate(inflater, container, false)
+        //Set layoutManager and adapter for recyclerView
         trendingBinding.trendingRecyclerView.apply {
             setHasFixedSize(true)
             layoutManager =  GridLayoutManager(context, GRID_COL_COUNT)
@@ -47,23 +47,13 @@ class TrendingFragment() :Fragment()  {
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d("TRENDING", "" +
-                trendingBinding.trendingRecyclerView.isAttachedToWindow)
-    }
-
     private fun observeGames(){
         mainViewModel.getGames().observe(this, Observer {
             it?.let { resource ->
                 when (resource.status){
                     Status.SUCCESS -> {
                         resource.data?.let {
-                                list: List<GameCard> -> gameCardAdapter.setGames(list)
+                                //list -> gameCardAdapter.setGames(list)
                         }
                     }
                 }
@@ -78,18 +68,15 @@ class TrendingFragment() :Fragment()  {
          * fragment.
          */
         private const val ARG_SECTION_NUMBER = "section_number"
-        public const val GRID_COL_COUNT = 2
+        const val GRID_COL_COUNT = 2
 
         /**
-         * Returns a new instance of this fragment for the given section
-         * number.
+         * Returns a new instance of this fragment.
          */
         @JvmStatic
-        fun newInstance(sectionNumber: Int): TrendingFragment {
-
+        fun newInstance(): TrendingFragment {
             return TrendingFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
                 }
             }
         }
