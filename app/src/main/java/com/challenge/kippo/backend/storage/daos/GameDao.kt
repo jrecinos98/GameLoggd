@@ -5,24 +5,24 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.challenge.kippo.backend.storage.entities.GameCard
+import com.challenge.kippo.backend.storage.entities.Game
 
 interface GameDao{
-    @Query("SELECT * FROM GameCard ORDER BY title DESC")
-    fun getAllDescOrder(): List<GameCard>
+    @Query("SELECT * FROM Game ORDER BY title DESC")
+    fun getAllDescOrder(): List<Game>
 
-    @Query("SELECT * FROM GameCard WHERE favorite = 1 ORDER BY title DESC")
-    fun findFavoritesDescOrder() : LiveData<List<GameCard>>
+    @Query("SELECT * FROM Game WHERE favorite = 1 ORDER BY title DESC")
+    fun findFavoritesDescOrder() : LiveData<List<Game>>
 
-    @Query("SELECT * FROM GameCard WHERE title LIKE :title ")
-    fun findByTitle(title: String): GameCard
+    @Query("SELECT * FROM Game WHERE title LIKE :title ")
+    fun findByTitle(title: String): Game
 
     @Insert
-    fun insertAll(vararg todo: GameCard)
+    fun insertAll(vararg todo: Game)
 
     @Delete
-    fun delete(todo: GameCard)
+    fun delete(todo: Game)
 
     @Update
-    fun updateTodo(vararg todos: GameCard)
+    fun updateTodo(vararg todos: Game)
 }

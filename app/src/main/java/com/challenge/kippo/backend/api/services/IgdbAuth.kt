@@ -1,11 +1,9 @@
-package com.challenge.kippo.backend.networking.services
+package com.challenge.kippo.backend.api.services
 
 import com.challenge.kippo.BuildConfig
-import com.challenge.kippo.backend.networking.responses.AuthResponse
+import com.challenge.kippo.backend.api.responses.AuthResponse
 import com.challenge.kippo.util.Constants
 import retrofit2.Call
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 

@@ -6,7 +6,7 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-import com.challenge.kippo.backend.networking.ApiHelper
+import com.challenge.kippo.backend.api.ApiHelper
 import com.challenge.kippo.databinding.ActivityMainBinding
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.backend.view_model.ViewModelFactory

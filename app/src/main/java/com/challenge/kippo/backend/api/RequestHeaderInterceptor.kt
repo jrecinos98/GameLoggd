@@ -1,4 +1,4 @@
-package com.challenge.kippo.backend.networking.requests
+package com.challenge.kippo.backend.api
 
 import com.challenge.kippo.util.Constants
 import okhttp3.Interceptor

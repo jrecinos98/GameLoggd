@@ -3,13 +3,11 @@ package com.challenge.kippo.backend.view_model
 import android.util.Log
 import androidx.lifecycle.*
 import com.challenge.kippo.backend.Repository
-import com.challenge.kippo.backend.networking.requests.Games
-import com.challenge.kippo.backend.networking.responses.AuthResponse
+import com.challenge.kippo.backend.api.responses.AuthResponse
 import com.challenge.kippo.util.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,7 +33,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         emit(Result.loading(data = null))
         try {
             //Fetch the data and notify if it succeeds
-            emit(Result.success(data = repository.getGames()))
+            emit(Result.success(data = repository.getTrendingGames()))
         } catch (exception: Exception) {
             //Upon an exception the observers will be notified of failure and receive error message.
             emit(Result.error(data = null, message = exception.message ?: "Error Occurred!"))
@@ -69,18 +67,20 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
             })
         }
     }
+    /*
     fun fetchTrendingGames() : LiveData<List<Games>>{
         //TODO
-        return MutableLiveData(listOf(Games( 0, "")))
+        return MutableLiveData(listOf(Games( 0, "", "")))
     }
 
     fun fetchFavoriteGames() : LiveData<List<Games>>{
         //TODO
-        return MutableLiveData(listOf(Games(0, "")))
+        return MutableLiveData(listOf(Games(0, "", "")))
     }
 
     fun search(game : String) : LiveData<List<Games>>{
         //TODO
-        return MutableLiveData(listOf(Games(0, "")))
+        return MutableLiveData(listOf(Games(0, "", "")))
     }
+    */
 }

@@ -1,4 +1,4 @@
-package com.challenge.kippo.backend.networking
+package com.challenge.kippo.backend.api
 
 import android.content.Context
 import android.content.SharedPreferences

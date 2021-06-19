@@ -1,4 +1,4 @@
-package com.challenge.kippo.backend.networking.responses
+package com.challenge.kippo.backend.api.responses
 
 import com.google.gson.annotations.SerializedName
 

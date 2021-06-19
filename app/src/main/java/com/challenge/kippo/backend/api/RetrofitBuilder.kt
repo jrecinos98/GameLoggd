@@ -1,11 +1,8 @@
-package com.challenge.kippo.backend.networking
+package com.challenge.kippo.backend.api
 
-import android.content.Context
-import android.util.Log
 import com.challenge.kippo.BuildConfig
-import com.challenge.kippo.backend.networking.requests.RequestHeaderInterceptor
-import com.challenge.kippo.backend.networking.services.IgdbAuth
-import com.challenge.kippo.backend.networking.services.IgdbService
+import com.challenge.kippo.backend.api.services.IgdbAuth
+import com.challenge.kippo.backend.api.services.IgdbEndpoints
 import com.challenge.kippo.util.Constants
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -16,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 //TODO make into Singleton
 object RetrofitBuilder {
-    private lateinit var igdbService: IgdbService
+    private lateinit var igdbService: IgdbEndpoints
     private lateinit var igdbAuth : IgdbAuth
     private val loggerInterceptor : Interceptor
 
@@ -28,7 +25,8 @@ object RetrofitBuilder {
     /**
      * Get service object
      */
-    fun getIgdbService(token : String?): IgdbService? {
+    //TODO every time the service is fetched check if the token exists and has not expired.
+    fun getIgdbService(token : String?): IgdbEndpoints? {
         if( token != null) {
             if (!::igdbService.isInitialized) {
                 val interceptor = RequestHeaderInterceptor(
@@ -36,13 +34,13 @@ object RetrofitBuilder {
                     token
                 )
                 val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
+                val loggerClient = OkHttpClient.Builder().addInterceptor(loggerInterceptor).build()
                 val retrofit = Retrofit.Builder()
                         .baseUrl(Constants.Network.Requests.BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .client(client)
                         .build() //Doesn't require the adapter
-                igdbService = retrofit.create(IgdbService::class.java)
+                igdbService = retrofit.create(IgdbEndpoints::class.java)
             }
             return igdbService
         }

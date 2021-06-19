@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.challenge.kippo.backend.Repository
-import com.challenge.kippo.backend.networking.ApiHelper
+import com.challenge.kippo.backend.api.ApiHelper
 
 
 class ViewModelFactory(private val context: Context, private val apiHelper: ApiHelper) : ViewModelProvider.Factory {

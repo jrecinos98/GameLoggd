@@ -5,25 +5,19 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class GameCard(
+data class Game(
     @PrimaryKey(autoGenerate = true)
     val id : Int,
     @ColumnInfo(name= "cover_url")
-    private val coverUrl   : String,
+    var coverUrl   : String,
     @ColumnInfo(name= "favorite")
     private val favorited  : Boolean,
     @ColumnInfo(name= "title")
     private val title      : String,
     @ColumnInfo(name= "genre")
-    private val genre      : String,
-    @ColumnInfo(name= "percentage")
-    private val percentage : Int
+    var genre      : String,
+    @ColumnInfo(name= "rating")
+    private val percentage : Double
     ){
-
-    /*
-    private fun getGameImage() : Bitmap {
-        return Bitma
-    }
-    */
 
 }
