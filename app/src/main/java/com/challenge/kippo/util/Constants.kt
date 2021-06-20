@@ -14,6 +14,10 @@ class Constants{
             const val CLIENT_SECRET = "client_secret"
             const val TOKEN_TYPE = "grant_type"
         }
+        object Query{
+            const val PARAM_SEPARATOR = ","
+            const val TERMINATOR = ';'
+        }
     }
     object Keys{
         const val USER_TOKEN = "user_token"

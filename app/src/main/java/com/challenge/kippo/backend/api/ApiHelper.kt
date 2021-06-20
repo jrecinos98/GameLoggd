@@ -3,6 +3,7 @@ package com.challenge.kippo.backend.api
 import android.content.Context
 import com.challenge.kippo.backend.api.responses.CoverResponse
 import com.challenge.kippo.backend.api.responses.GameResponse
+import com.challenge.kippo.backend.api.responses.GenreResponse
 import retrofit2.Call
 
 
@@ -15,13 +16,14 @@ class ApiHelper (context : Context){
 
     fun saveAuthToken(token : String) = sessionManager.saveAuthToken(token)
 
-    fun getTrendingGames() : Call<List<GameResponse>>? {
+    fun fetchTrendingGames() : Call<List<GameResponse>>? {
         //Converts the query we want to send to the appropriate format
-        return  igdbService?.fetchGames(GameResponse.trendingGamesRequest())
+        return  igdbService?.fetchGames(GameResponse.buildTrendingRequestBody())
 
     }
 
-    fun fetchCovers(ids : String) = igdbService?.fetchCovers(CoverResponse.fetchCoversRequest(ids))
+    fun fetchCovers(ids : String) = igdbService?.fetchCovers(CoverResponse.buildRequestBody(ids))
+    fun fetchGenres(ids : String) = igdbService?.fetchGenres(GenreResponse.buildRequestBody(ids))
 
     companion object{
         public fun generateHDImageURL(imageId : String ) : String {

@@ -5,6 +5,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
+/**
+ * class that models the JSON response for requests made to 'genre' endpoint
+ */
 data class GenreResponse (
     @SerializedName(value = "id")
     val id : Int,
@@ -12,8 +15,9 @@ data class GenreResponse (
     val name: String
 ){
     companion object{
-        fun fetchSortedGenreRequest(ids : String) : RequestBody {
-            val query = FIELDS + "where id = ($ids);" + SORT_BY_ID
+        //
+        fun buildRequestBody(ids : String) : RequestBody {
+            val query = FIELDS + "where id = ($ids);" //+ SORT_BY_ID
             //Converts the query we want to send to the appropriate format
             return query.toRequestBody("application/octet-stream".toMediaTypeOrNull())
 

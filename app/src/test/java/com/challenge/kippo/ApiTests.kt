@@ -74,7 +74,7 @@ class ApiTests {
     fun fetchTrendingTest(){
         val token = getAuthToken()
         val request = RetrofitBuilder.getIgdbService(token)
-        val response = request?.fetchGames(GameResponse.trendingGamesRequest())?.execute()
+        val response = request?.fetchGames(GameResponse.buildTrendingRequestBody())?.execute()
         if(response != null){
             if(response.isSuccessful){
                 //print(response.body())
@@ -86,7 +86,7 @@ class ApiTests {
     }
     private fun fetchGameCovers(ids : String, request : IgdbEndpoints) : List<CoverResponse>{
         println("ID: $ids")
-        val response = request.fetchCovers(CoverResponse.fetchCoversRequest(ids)).execute()
+        val response = request.fetchCovers(CoverResponse.buildRequestBody(ids)).execute()
         var covers = listOf<CoverResponse>()
         if(response.isSuccessful){
             covers = response.body()!!
@@ -95,7 +95,7 @@ class ApiTests {
     }
     private fun fetchGenres(ids : String, request : IgdbEndpoints) : List<GenreResponse>{
         println("Genres: $ids")
-        val response = request.fetchGenres(GenreResponse.fetchSortedGenreRequest(ids)).execute()
+        val response = request.fetchGenres(GenreResponse.buildRequestBody(ids)).execute()
         var genres = listOf<GenreResponse>()
         if(response.isSuccessful){
             genres = response.body()!!

@@ -5,6 +5,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
+/**
+ * Class that models the JSON response for requests made to 'covers' endpoint
+ */
 data class CoverResponse (
         @SerializedName(value = "id")
         val id : Int,
@@ -16,7 +19,7 @@ data class CoverResponse (
         val url : String
 ){
         companion object{
-                fun fetchCoversRequest(ids : String) : RequestBody {
+                fun buildRequestBody(ids : String) : RequestBody {
                         val query = FIELDS + "where id = ($ids);"
                         //Converts the query we want to send to the appropriate format
                         return query.toRequestBody("application/octet-stream".toMediaTypeOrNull())
