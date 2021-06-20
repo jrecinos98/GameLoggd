@@ -2,32 +2,31 @@ package com.challenge.kippo.backend
 
 import android.content.Context
 import androidx.lifecycle.liveData
-import com.challenge.kippo.backend.api.ApiHelper
-import com.challenge.kippo.backend.api.responses.AuthResponse
-import com.challenge.kippo.backend.api.responses.CoverResponse
-import com.challenge.kippo.backend.api.responses.GameResponse
-import com.challenge.kippo.backend.api.responses.GenreResponse
-import com.challenge.kippo.backend.api.services.IgdbEndpoints
-import com.challenge.kippo.backend.storage.entities.Game
+import com.challenge.kippo.backend.api.ClientManager
+import com.challenge.kippo.backend.api.responses.Auth
+import com.challenge.kippo.backend.api.responses.Cover
+import com.challenge.kippo.backend.api.responses.Game
+import com.challenge.kippo.backend.api.responses.Genre
+import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.util.Constants
 import com.challenge.kippo.util.Result
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Call
 import java.lang.Exception
 
-class Repository (private val context: Context, private val apiHelper: ApiHelper) {
+class Repository (private val context: Context, private val clientManager: ClientManager) {
     /**
      * Authenticates the app to the IGDB API.
      *
      */
-    fun authenticate(): Call<AuthResponse> {
-        return apiHelper.authenticate()
+    fun authenticate(): Call<Auth> {
+        return clientManager.authenticate()
     }
 
     /**
      * Stores the authentication token into SharedPreferences.
      */
-    fun storeAuthToken(token : String) = apiHelper.saveAuthToken(token)
+    fun storeAuthToken(token : String) = clientManager.saveAuthToken(token)
 
 
     /**
@@ -38,7 +37,7 @@ class Repository (private val context: Context, private val apiHelper: ApiHelper
         emit(Result.loading(data = null))
         try{
             //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
-            val response = apiHelper.fetchTrendingGames()?.execute()
+            val response = clientManager.fetchTrendingGames()?.execute()
             if (response != null) {
                 if(response.isSuccessful){
                     emit(Result.success(data = response.body()?.let { generateGames(it) }))
@@ -54,22 +53,22 @@ class Repository (private val context: Context, private val apiHelper: ApiHelper
      * Artwork covers and genre requests are made to complete assembling the Game Object
      * @param gamesData List of GameResponses received from server
      */
-    private fun generateGames(gamesData : List<GameResponse>) : List<Game>{
+    private fun generateGames(gamesData : List<Game>) : List<GameData>{
         var coverIds = "" //Id of all cover artworks to be requested
         var genreIds = "" //Id of all genres to be requested
         //Maps cover id to a Game object to be updated after a request for cover id is made.
         //Cover ids are unique so it is safe to do this approach
-        val coverMapper = HashMap<Int, Game>()
+        val coverMapper = HashMap<Int, GameData>()
         //Maps genres to a list of games of that genre to be updated later.
         //Imitates a HashMap with linked list conflict resolution
-        val genreMapper = HashMap<Int, ArrayList<Game>>()
+        val genreMapper = HashMap<Int, ArrayList<GameData>>()
         //List of all Game objects. Genre and Cover are modified before returning the list.
-        val gameList = arrayListOf<Game>()
+        val gameList = arrayListOf<GameData>()
 
         //It is necessary to loop over all gameResponse objects to collect cover ids and genres ids
         for ((index, gameData) in gamesData.withIndex()){
             //Instantiates a Game Object with default cover url and genre
-            val game = Game(gameData)
+            val game = GameData(gameData)
             //Only append the cover ids of games that have an associated cover artwork
             if(gameData.coverId != 0) {
                 coverMapper.put(game.id, game)
@@ -98,14 +97,14 @@ class Repository (private val context: Context, private val apiHelper: ApiHelper
 
             gameList.add(game)
         }
-
+        //TODO figure out how to call these methods asynchronously within a coroutine
         val covers = fetchGameCovers(coverIds)
         val genres = fetchGenres(genreIds)
 
         //Assign cover url to games that have one.
         for (cover in covers){
-            val game : Game? = coverMapper[cover.game]
-            game?.coverUrl = ApiHelper.generateHDImageURL(cover.imageID)
+            val gameData : GameData? = coverMapper[cover.game]
+            gameData?.coverUrl = Cover.generateHDImageURL(cover.imageID)
         }
         //Assign genre to games in gameList
         for( genre in genres){
@@ -125,10 +124,10 @@ class Repository (private val context: Context, private val apiHelper: ApiHelper
      * @param ids Must be in the form x1,x2,x3,x4 to work correctly //TODO consider passing a list instead
      * @return returns a list of cover artwork that match the provided ids
      */
-    fun fetchGameCovers(ids : String) : List<CoverResponse>{
+    fun fetchGameCovers(ids : String) : List<Cover>{
         //Execute on same thread
-        val response = apiHelper.fetchCovers(ids)?.execute()
-        var covers = listOf<CoverResponse>()
+        val response = clientManager.fetchCovers(ids)?.execute()
+        var covers = listOf<Cover>()
         if(response != null){
             if(response.isSuccessful){
                 covers = response.body()!!
@@ -144,10 +143,10 @@ class Repository (private val context: Context, private val apiHelper: ApiHelper
      * @param ids Must be in the form x1,x2,x3,x4 to work correctly //TODO consider passing a list instead
      * @return returns a list of genres that match the provided ids
      */
-    private fun fetchGenres(ids : String) : List<GenreResponse>{
+    private fun fetchGenres(ids : String) : List<Genre>{
         //println("Genres: $ids")
-        val response = apiHelper.fetchGenres(ids)?.execute()
-        var genres = listOf<GenreResponse>()
+        val response = clientManager.fetchGenres(ids)?.execute()
+        var genres = listOf<Genre>()
         if (response != null) {
             if(response.isSuccessful){
                 genres = response.body()!!

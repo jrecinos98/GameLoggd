@@ -8,7 +8,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 /**
  * class that models the JSON response for requests made to 'genre' endpoint
  */
-data class GenreResponse (
+data class Genre (
     @SerializedName(value = "id")
     val id : Int,
     @SerializedName(value = "name")

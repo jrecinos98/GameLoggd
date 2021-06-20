@@ -1,8 +1,9 @@
 package com.challenge.kippo.backend.api
 
 import com.challenge.kippo.BuildConfig
-import com.challenge.kippo.backend.api.services.IgdbAuth
-import com.challenge.kippo.backend.api.services.IgdbEndpoints
+import com.challenge.kippo.backend.api.requests.IgdbAuth
+import com.challenge.kippo.backend.api.requests.IgdbEndpoints
+import com.challenge.kippo.backend.api.requests.RequestAuthInterceptor
 import com.challenge.kippo.util.Constants
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -15,7 +16,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitBuilder {
     private lateinit var igdbService: IgdbEndpoints
     private lateinit var igdbAuth : IgdbAuth
+    private lateinit var savedToken : String
     private val loggerInterceptor : Interceptor
+
 
     init{
         loggerInterceptor = HttpLoggingInterceptor()
@@ -23,28 +26,32 @@ object RetrofitBuilder {
 //        loggerInterceptor.level = HttpLoggingInterceptor.Level.BODY
     }
     /**
-     * Get service object
+     * Get IGDB endpoint request object
      */
-    //TODO every time the service is fetched check if the token exists and has not expired.
-    fun getIgdbService(token : String?): IgdbEndpoints? {
-        if( token != null) {
-            if (!::igdbService.isInitialized) {
-                val interceptor = RequestHeaderInterceptor(
+    fun getIgdbService(currentToken : String,
+                       onAuthRefresh: (()-> String)?)
+    : IgdbEndpoints? {
+        //Check if token has not become stale/expired
+        if (!::igdbService.isInitialized || savedToken != currentToken) {
+             savedToken= currentToken
+            val interceptor = RequestAuthInterceptor(
                     BuildConfig.CLIENT_ID,
-                    token
-                )
-                val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-                val loggerClient = OkHttpClient.Builder().addInterceptor(loggerInterceptor).build()
-                val retrofit = Retrofit.Builder()
-                        .baseUrl(Constants.Network.Requests.BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .client(client)
-                        .build() //Doesn't require the adapter
-                igdbService = retrofit.create(IgdbEndpoints::class.java)
+                    savedToken
+            )
+            //Only add listener if non-null
+            if(onAuthRefresh != null) {
+                interceptor.addOnAuthRefreshListener(onAuthRefresh)
             }
-            return igdbService
+            val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+            val loggerClient = OkHttpClient.Builder().addInterceptor(loggerInterceptor).build()
+            val retrofit = Retrofit.Builder()
+                    .baseUrl(Constants.Network.Requests.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build() //Doesn't require the adapter
+            igdbService = retrofit.create(IgdbEndpoints::class.java)
         }
-        return null
+        return igdbService
     }
 
     /**

@@ -5,10 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.challenge.kippo.backend.storage.daos.GameDao
-import com.challenge.kippo.backend.storage.entities.Game
+import com.challenge.kippo.backend.storage.entities.GameData
 
 @Database(
-    entities = [Game::class],
+    entities = [GameData::class],
     version = 1
 )
 abstract class LocalDatabase : RoomDatabase() {

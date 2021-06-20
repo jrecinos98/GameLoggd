@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.challenge.kippo.R
-import com.challenge.kippo.backend.storage.entities.Game
+import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.databinding.CustomGameCardBinding
 
 /**
@@ -81,7 +81,7 @@ class GameCardAdapter (private val list: ArrayList<String>): RecyclerView.Adapte
 
         return list.size
     }
-    fun setGames(games: List<Game>){
+    fun setGames(gameData: List<GameData>){
         list.apply {
             clear()
             //addAll(games)

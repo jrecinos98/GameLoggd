@@ -1,7 +1,7 @@
-package com.challenge.kippo.backend.api.services
+package com.challenge.kippo.backend.api.requests
 
 import com.challenge.kippo.BuildConfig
-import com.challenge.kippo.backend.api.responses.AuthResponse
+import com.challenge.kippo.backend.api.responses.Auth
 import com.challenge.kippo.util.Constants
 import retrofit2.Call
 import retrofit2.http.POST
@@ -14,5 +14,5 @@ interface IgdbAuth {
         @Query(Constants.Network.Authentication.CLIENT_ID) id : String = BuildConfig.CLIENT_ID,
         @Query(Constants.Network.Authentication.CLIENT_SECRET) secret : String = BuildConfig.CLIENT_SECRET,
         @Query(Constants.Network.Authentication.TOKEN_TYPE) type : String = "client_credentials"
-    ) : Call<AuthResponse>
+    ) : Call<Auth>
 }

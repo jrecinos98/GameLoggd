@@ -8,7 +8,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 /**
  * Class that models the JSON response for requests made to 'covers' endpoint
  */
-data class CoverResponse (
+data class Cover (
         @SerializedName(value = "id")
         val id : Int,
         @SerializedName(value = "game")
@@ -24,6 +24,11 @@ data class CoverResponse (
                         //Converts the query we want to send to the appropriate format
                         return query.toRequestBody("application/octet-stream".toMediaTypeOrNull())
 
+                }
+                public fun generateHDImageURL(imageId : String ) : String {
+                        //TODO NOTE: Not sure if all images are jpg.
+                        // If not I will have to parse the id from url received with request
+                        return "https://images.igdb.com/igdb/image/upload/t_cover_big/$imageId.jpg"
                 }
                 //Necessary fields to build a Game object
                 const val FIELDS = "fields id,game,image_id, url;"

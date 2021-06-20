@@ -1,15 +1,12 @@
 package com.challenge.kippo
 
-import com.challenge.kippo.backend.api.ApiHelper
 import com.challenge.kippo.backend.api.RetrofitBuilder
-import com.challenge.kippo.backend.api.responses.CoverResponse
-import com.challenge.kippo.backend.api.responses.GameResponse
-import com.challenge.kippo.backend.api.responses.GenreResponse
-import com.challenge.kippo.backend.api.services.IgdbEndpoints
-import com.challenge.kippo.backend.storage.entities.Game
+import com.challenge.kippo.backend.api.responses.Cover
+import com.challenge.kippo.backend.api.responses.Game
+import com.challenge.kippo.backend.api.responses.Genre
+import com.challenge.kippo.backend.api.requests.IgdbEndpoints
+import com.challenge.kippo.backend.storage.entities.GameData
 import org.junit.Test
-
-import org.junit.Before
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -22,7 +19,12 @@ class ApiTests {
         val response = auth.authenticate().execute()
         return response.body()?.authToken ?: ""
     }
-    @Test @Before
+    private fun onAuthRefresh() : String {
+        val token = getAuthToken()
+        println("token: $token")
+        return token
+    }
+    @Test
     fun authenticationTest() {
         val apiHelper = RetrofitBuilder.getIgdbAuth()
         val response = apiHelper.authenticate().execute()
@@ -32,8 +34,20 @@ class ApiTests {
     }
     @Test
     fun reAuthenticationTest(){
-        //val token = getAuthToken()
 
+        var updateToken = ""
+        //println("onAuthRefresh: ${::onAuthRefresh}")
+        val request = RetrofitBuilder.getIgdbService("token", ::onAuthRefresh)
+        val response = request?.fetchGames(Game.buildTrendingRequestBody())?.execute()
+        if(response != null){
+            println("Response: ${response.code()}")
+            if(response.isSuccessful){
+                print(response.body())
+                //print(response.body())
+
+            }
+
+        }
 
 
     }
@@ -73,9 +87,10 @@ class ApiTests {
     @Test
     fun fetchTrendingTest(){
         val token = getAuthToken()
-        val request = RetrofitBuilder.getIgdbService(token)
-        val response = request?.fetchGames(GameResponse.buildTrendingRequestBody())?.execute()
+        val request = RetrofitBuilder.getIgdbService(token, null)
+        val response = request?.fetchGames(Game.buildTrendingRequestBody())?.execute()
         if(response != null){
+            println(response.errorBody().toString())
             if(response.isSuccessful){
                 //print(response.body())
                 val gameList = response.body()?.let { generateGameCards(it, request) }
@@ -84,34 +99,34 @@ class ApiTests {
             }
         }
     }
-    private fun fetchGameCovers(ids : String, request : IgdbEndpoints) : List<CoverResponse>{
-        println("ID: $ids")
-        val response = request.fetchCovers(CoverResponse.buildRequestBody(ids)).execute()
-        var covers = listOf<CoverResponse>()
+    private fun fetchGameCovers(ids : String, request : IgdbEndpoints) : List<Cover>{
+        //println("ID: $ids")
+        val response = request.fetchCovers(Cover.buildRequestBody(ids)).execute()
+        var covers = listOf<Cover>()
         if(response.isSuccessful){
             covers = response.body()!!
         }
         return covers
     }
-    private fun fetchGenres(ids : String, request : IgdbEndpoints) : List<GenreResponse>{
-        println("Genres: $ids")
-        val response = request.fetchGenres(GenreResponse.buildRequestBody(ids)).execute()
-        var genres = listOf<GenreResponse>()
+    private fun fetchGenres(ids : String, request : IgdbEndpoints) : List<Genre>{
+        //println("Genres: $ids")
+        val response = request.fetchGenres(Genre.buildRequestBody(ids)).execute()
+        var genres = listOf<Genre>()
         if(response.isSuccessful){
             genres = response.body()!!
         }
         return genres
 
     }
-    private fun generateGameCards(games : List<GameResponse>, request : IgdbEndpoints) : List<Game>{
+    private fun generateGameCards(games : List<Game>, request : IgdbEndpoints) : List<GameData>{
         var coverIds = ""
         var genreIds = ""
-        var gameHashMap = HashMap<Int,Game>()
-        val gameCards = arrayListOf<Game>()
-        val genreHashMap = HashMap<Int, ArrayList<Game>>()
+        var gameHashMap = HashMap<Int,GameData>()
+        val gameCards = arrayListOf<GameData>()
+        val genreHashMap = HashMap<Int, ArrayList<GameData>>()
         for (game in games){
             //Initialize a default gameCard with Game info
-            val gameCard = Game(
+            val gameCard = GameData(
                     game.id,
                     "default_cover_url",
                     false,
@@ -144,8 +159,8 @@ class ApiTests {
         val genres = fetchGenres(genreIds.substring(0, genreIds.length - 1), request)
         //Assign cover url to gameCards that have one.
         for (cover in covers){
-            val game : Game? = gameHashMap.get(cover.game)
-            game?.coverUrl = ApiHelper.generateHDImageURL(cover.imageID)
+            val gameData : GameData? = gameHashMap.get(cover.game)
+            gameData?.coverUrl = Cover.generateHDImageURL(cover.imageID)
         }
         //Assign genre to gameCards
         for( genre in genres){

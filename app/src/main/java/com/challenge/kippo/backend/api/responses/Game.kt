@@ -8,7 +8,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 /**
  * class that models the JSON response for requests made to 'game' endpoint
  */
-data class GameResponse(
+data class Game(
         @SerializedName(value = "id")
         val id : Int,
         @SerializedName(value = "name")
@@ -35,7 +35,7 @@ data class GameResponse(
         val url : String
 ){
         companion object{
-                fun searchRequestBody(name : String) : RequestBody {
+                fun searchGameRequest(name : String) : RequestBody {
                         val query = FIELDS + "search $name;"
                         //Converts the query we want to send to the appropriate format
                         return query.toRequestBody("application/octet-stream".toMediaTypeOrNull())

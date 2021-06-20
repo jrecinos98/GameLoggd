@@ -6,7 +6,7 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-import com.challenge.kippo.backend.api.ApiHelper
+import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.databinding.ActivityMainBinding
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.backend.view_model.ViewModelFactory
@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(mainActivityBinding.root);
-        val apiHelper = ApiHelper(this)
+        val apiHelper = ClientManager(this)
         //Creates a MainViewModel through its designated Factory
         viewModel = ViewModelProvider(this, ViewModelFactory(this, apiHelper)).get()
         viewModel.authenticate()

@@ -23,7 +23,7 @@ class SessionManager (context: Context) {
     /**
      * Function to fetch auth token
      */
-    fun fetchAuthToken(): String? {
-        return prefs.getString(Constants.Keys.USER_TOKEN, null)
+    fun fetchAuthToken(): String {
+        return prefs.getString(Constants.Keys.USER_TOKEN, null) ?: ""
     }
 }
