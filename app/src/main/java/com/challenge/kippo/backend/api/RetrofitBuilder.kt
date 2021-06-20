@@ -3,7 +3,7 @@ package com.challenge.kippo.backend.api
 import com.challenge.kippo.BuildConfig
 import com.challenge.kippo.backend.api.requests.IgdbAuth
 import com.challenge.kippo.backend.api.requests.IgdbEndpoints
-import com.challenge.kippo.backend.api.requests.RequestAuthInterceptor
+import com.challenge.kippo.backend.api.requests.AuthInterceptor
 import com.challenge.kippo.util.Constants
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -34,7 +34,7 @@ object RetrofitBuilder {
         //Check if token has not become stale/expired
         if (!::igdbService.isInitialized || savedToken != currentToken) {
              savedToken= currentToken
-            val interceptor = RequestAuthInterceptor(
+            val interceptor = AuthInterceptor(
                     BuildConfig.CLIENT_ID,
                     savedToken
             )
@@ -45,7 +45,7 @@ object RetrofitBuilder {
             val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
             val loggerClient = OkHttpClient.Builder().addInterceptor(loggerInterceptor).build()
             val retrofit = Retrofit.Builder()
-                    .baseUrl(Constants.Network.Requests.BASE_URL)
+                    .baseUrl(Constants.API.Requests.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build() //Doesn't require the adapter
@@ -62,7 +62,7 @@ object RetrofitBuilder {
             val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(loggerInterceptor).build()
 
             val retrofit = Retrofit.Builder()
-                .baseUrl(Constants.Network.Authentication.BASE_URL)
+                .baseUrl(Constants.API.Authentication.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 //.client(client)
                 .build() //Doesn't require the adapter

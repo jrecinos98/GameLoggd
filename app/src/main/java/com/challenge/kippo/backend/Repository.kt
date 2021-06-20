@@ -75,7 +75,7 @@ class Repository (private val context: Context, private val clientManager: Clien
                 coverIds += gameData.coverId.toString()
                 //Do not append comma to the last id or server will return a syntax error.
                 if (index != gamesData.lastIndex)
-                    coverIds += Constants.Network.Query.PARAM_SEPARATOR
+                    coverIds += Constants.API.Query.PARAM_SEPARATOR
             }
             if(gameData.genreId != null) {
                 val genre = gameData.genreId[0]
@@ -92,7 +92,7 @@ class Repository (private val context: Context, private val clientManager: Clien
                 }
                 //Do not append comma to the last id or server will return a syntax error.
                 if (index != gamesData.lastIndex)
-                    genreIds += Constants.Network.Query.PARAM_SEPARATOR
+                    genreIds += Constants.API.Query.PARAM_SEPARATOR
             }
 
             gameList.add(game)

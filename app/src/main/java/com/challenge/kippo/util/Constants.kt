@@ -1,7 +1,7 @@
 package com.challenge.kippo.util
 
 class Constants{
-    object Network{
+    object API{
         object Requests{
             const val BASE_URL = "https://api.igdb.com/v4/"
             const val CLIENT_ID = "Client-ID"
@@ -17,6 +17,11 @@ class Constants{
         object Query{
             const val PARAM_SEPARATOR = ","
             const val TERMINATOR = ';'
+        }
+        object Codes{
+            const val OK = 200
+            const val BAD_QUERY = 400
+            const val UNAUTHORIZED = 401
         }
     }
     object Keys{

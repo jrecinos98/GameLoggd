@@ -11,8 +11,8 @@ import retrofit2.http.Query
 interface IgdbAuth {
     @POST("oauth2/token")
     fun authenticate(
-        @Query(Constants.Network.Authentication.CLIENT_ID) id : String = BuildConfig.CLIENT_ID,
-        @Query(Constants.Network.Authentication.CLIENT_SECRET) secret : String = BuildConfig.CLIENT_SECRET,
-        @Query(Constants.Network.Authentication.TOKEN_TYPE) type : String = "client_credentials"
+        @Query(Constants.API.Authentication.CLIENT_ID) id : String = BuildConfig.CLIENT_ID,
+        @Query(Constants.API.Authentication.CLIENT_SECRET) secret : String = BuildConfig.CLIENT_SECRET,
+        @Query(Constants.API.Authentication.TOKEN_TYPE) type : String = "client_credentials"
     ) : Call<Auth>
 }

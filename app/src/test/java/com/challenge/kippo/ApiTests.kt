@@ -1,12 +1,22 @@
 package com.challenge.kippo
 
+import com.challenge.kippo.TestData.testCover
+import com.challenge.kippo.TestData.testGame
+import com.challenge.kippo.TestData.testGameGenres
+import com.challenge.kippo.TestData.testGameId
+import com.challenge.kippo.TestData.testHDImageURL
+import com.challenge.kippo.TestData.validateResponse
+
 import com.challenge.kippo.backend.api.RetrofitBuilder
 import com.challenge.kippo.backend.api.responses.Cover
 import com.challenge.kippo.backend.api.responses.Game
 import com.challenge.kippo.backend.api.responses.Genre
 import com.challenge.kippo.backend.api.requests.IgdbEndpoints
 import com.challenge.kippo.backend.storage.entities.GameData
+import com.challenge.kippo.util.Constants
+import org.junit.Before
 import org.junit.Test
+import retrofit2.Response
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -14,6 +24,8 @@ import org.junit.Test
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ApiTests {
+    //Token to be used for tests
+    private lateinit var token : String;
     private fun getAuthToken() : String{
         val auth = RetrofitBuilder.getIgdbAuth()
         val response = auth.authenticate().execute()
@@ -21,64 +33,95 @@ class ApiTests {
     }
     private fun onAuthRefresh() : String {
         val token = getAuthToken()
-        println("token: $token")
+        //println("token: $token")
         return token
     }
-    @Test
+    private fun getRequest() : IgdbEndpoints?{
+        //val token = getAuthToken()
+        return RetrofitBuilder.getIgdbService(token, ::onAuthRefresh)
+    }
+
+    @Test @Before
     fun authenticationTest() {
-        val apiHelper = RetrofitBuilder.getIgdbAuth()
-        val response = apiHelper.authenticate().execute()
-        assert(response.code() == 200)
+        val auth = RetrofitBuilder.getIgdbAuth()
+        val response = auth.authenticate().execute()
+
+        validateResponse(response)
         assert(response.body()?.tokenType == "bearer")
         assert(response.body()?.authToken is String)
+        token = response.body()?.authToken!!
     }
     @Test
     fun reAuthenticationTest(){
-
         var updateToken = ""
-        //println("onAuthRefresh: ${::onAuthRefresh}")
-        val request = RetrofitBuilder.getIgdbService("token", ::onAuthRefresh)
-        val response = request?.fetchGames(Game.buildTrendingRequestBody())?.execute()
+        //Pass in invalid token
+        val request = RetrofitBuilder.getIgdbService("invalid_token"){
+            updateToken = getAuthToken()
+            return@getIgdbService updateToken
+        }
+        val response = request?.fetchGames(Game.buildGameRequestBody(testGameId))?.execute()
+        validateResponse(response)
+        /*
         if(response != null){
-            println("Response: ${response.code()}")
-            if(response.isSuccessful){
-                print(response.body())
-                //print(response.body())
-
-            }
+            val game = response.body()?.get(0)
+            //The == operator for Game class has been overridden so safe to compare them
+            assert(testGame == game){"Game data does not match"}
+            //print(response.body())
 
         }
-
+         */
+    }
+    @Test
+    fun interceptorCallBackTest(){
 
     }
-/*
 
     @Test
-    fun fetchGameInfoTest(){
-        val token = getAuthToken()
-        val request = RetrofitBuilder.getIgdbService(token)
-        //Converts the query we want to send to the appropriate format
-        val requestBody = "fields name,rating;".toRequestBody("application/octet-stream".toMediaTypeOrNull())
-        request?.fetchGames(requestBody)?.enqueue(object : Callback<List<Games>>{
-            override fun onResponse(call: Call<List<Games>>, response: Response<List<Games>>) {
-                println("Body: " + response.body().toString())
-                println("Code: " + response.code())
-                println("Url: " +request.fetchGames(requestBody).request().url.toString())
-            }
+    fun fetchGameQueryTest(){
+        val response = getRequest()?.fetchGames(Game.buildGameRequestBody(testGameId))?.execute()
+        validateResponse(response)
+        val game = response!!.body()!![0]
+        assert(testGame == game){"Game data does not match"}
+    }
 
-            override fun onFailure(call: Call<List<Games>>, t: Throwable) {
-
-            }
-
-        })
-
+    @Test
+    fun searchGameQueryTest(){
+        val response = getRequest()?.fetchGames(Game.buildSearchRequestBody(testGame.name))?.execute()
+        validateResponse(response)
+        val game = response!!.body()!![0]
+        assert(testGame == game){"Game data does not match"}
+    }
+    @Test
+    fun fetchTrendingQueryTest(){
+        //TODO figure out how to test as results may vary over time
+    }
+    @Test
+    fun fetchCoverQueryTest(){
+        val response =getRequest()?.fetchCovers(Cover.buildRequestBody(testGame.coverId.toString()))?.execute()
+        validateResponse(response)
+        val cover = response!!.body()!![0]
+        //Default == behaviour is to compare all the fields and that's okay for Cover objects
+        assert(cover == testCover)
 
     }
-*/
-
     @Test
-    fun filterByGenreTest(){
-
+    fun generateHDImageURL(){
+        val url = Cover.generateHDImageURL(testCover.imageID)
+        assert(url == testHDImageURL)
+    }
+    @Test
+    fun fetchGenreQueryTest(){
+        val genreIds = "${testGame.genreId?.get(0)}, ${testGame.genreId?.get(1)}"
+        val response =getRequest()?.fetchGenres(Genre.buildRequestBody(genreIds))?.execute()
+        validateResponse(response)
+        val genres = response!!.body()
+        if (genres != null) {
+            //Compare the obtained genre IDs
+            for ( genre in genres){
+                val testGenre = testGameGenres[genre.id]
+                assert(testGenre == genre)
+            }
+        }
     }
     @Test
     fun sortByRatingTest(){
@@ -90,11 +133,10 @@ class ApiTests {
         val request = RetrofitBuilder.getIgdbService(token, null)
         val response = request?.fetchGames(Game.buildTrendingRequestBody())?.execute()
         if(response != null){
-            println(response.errorBody().toString())
             if(response.isSuccessful){
                 //print(response.body())
-                val gameList = response.body()?.let { generateGameCards(it, request) }
-                print(gameList)
+                //val gameList = response.body()?.let { generateGameCards(it, request) }
+                //print(gameList)
 
             }
         }
@@ -118,6 +160,7 @@ class ApiTests {
         return genres
 
     }
+
     private fun generateGameCards(games : List<Game>, request : IgdbEndpoints) : List<GameData>{
         var coverIds = ""
         var genreIds = ""
@@ -174,11 +217,6 @@ class ApiTests {
         //println(gameCards)
 
         return gameCards
-    }
-
-    @Test
-    fun searchZeldaTest(){
-
     }
 
     @Test
