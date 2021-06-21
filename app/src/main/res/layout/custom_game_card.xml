@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
-    android:layout_height="300dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_rect_border"
+    >
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
@@ -16,6 +18,7 @@
         >
         <ImageView
             android:id="@+id/card_image"
+            android:scaleType="fitXY"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </ImageView>
@@ -26,52 +29,73 @@
             android:layout_height="wrap_content"
             android:scaleType="centerInside"
             android:layout_gravity="bottom|end"
+            android:layout_margin="10dp"
             >
         </ImageView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <LinearLayout
         android:id="@+id/test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@id/coordinator_layout"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="horizontal"
-        android:padding="16dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/coordinator_layout">
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:padding="5dp"
+            android:baselineAligned="false"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/test_title"
+                android:id="@+id/card_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:paddingLeft="16dp"
+                android:layout_gravity="start"
+                android:ellipsize="end"
+                android:fontFamily="@font/poppins_medium"
+                android:maxLines="1"
                 android:text="@string/title"
-                android:textStyle="bold"/>
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textAlignment="textStart"
+                android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/test_image"
+            <TextView
+                android:id="@+id/card_genre"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-
-                android:layout_gravity="left"
-                android:scaleType="center"
-                android:paddingLeft="16dp"
-                android:text="@string/description"/>
-
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:ellipsize="end"
+                android:fontFamily="@font/poppins_regular"
+                android:maxLines="1"
+                android:textAlignment="textStart"
+                android:textSize="12sp"
+                android:textColor="@color/genreTitle"
+                />
         </LinearLayout>
 
         <TextView
+            android:id="@+id/card_rating"
             android:layout_width="wrap_content"
-            android:text="90%"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:gravity="end"
-            />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
 
     </LinearLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

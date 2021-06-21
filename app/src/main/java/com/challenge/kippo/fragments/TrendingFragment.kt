@@ -8,23 +8,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.databinding.FragmentTrendingBinding
 import com.challenge.kippo.ui.main.GameCardAdapter
-import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.util.Status
+
 
 class TrendingFragment() :Fragment()  {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var trendingBinding: FragmentTrendingBinding
     private lateinit var gameCardAdapter: GameCardAdapter
 
-    //TODO remove
-    private val list = arrayListOf<String>("a", "b", "c", "d", "e", "f", "g" , "h")
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        gameCardAdapter = GameCardAdapter(list)
+        gameCardAdapter = GameCardAdapter(activity!!)
         retainInstance = true
     }
     override fun onCreateView(
@@ -35,22 +35,34 @@ class TrendingFragment() :Fragment()  {
         //Set layoutManager and adapter for recyclerView
         trendingBinding.trendingRecyclerView.apply {
             setHasFixedSize(true)
-            layoutManager =  GridLayoutManager(context, GRID_COL_COUNT)
+//            layoutManager =  GridLayoutManager(context, GRID_COL_COUNT)
+            layoutManager = object : GridLayoutManager(context, GRID_COL_COUNT) {
+                override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
+                    // force height of viewHolder here, this will override layout_height from xml
+                    lp.width = (width / 2.20).toInt()
+                    lp.height = (lp.width * 1.6060).toInt()
+                    lp.setMargins(0,0,0,10)
+                    return true
+                }
+            }
             adapter = gameCardAdapter
         }
-        //observeGames()
+        observeGames()
+
 
         return trendingBinding.root
 
     }
 
+
+
     private fun observeGames(){
-        mainViewModel.getGames().observe(this, Observer {
+        mainViewModel.getTrendingGames().observe(this, Observer {
             it?.let { resource ->
-                when (resource.status){
+                when (resource.status) {
                     Status.SUCCESS -> {
-                        resource.data?.let {
-                                //list -> gameCardAdapter.setGames(list)
+                        resource.data?.let { list ->
+                            gameCardAdapter.setGames(list)
                         }
                     }
                 }
