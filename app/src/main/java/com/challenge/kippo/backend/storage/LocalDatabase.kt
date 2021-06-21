@@ -9,7 +9,8 @@ import com.challenge.kippo.backend.storage.entities.GameData
 
 @Database(
     entities = [GameData::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun gameDao() : GameDao
