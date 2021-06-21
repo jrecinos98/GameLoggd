@@ -51,6 +51,8 @@ class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameC
                 cardRating.setText("${game.rating.toInt()}%")
                 //Set the listener for the favorite image
                 favoriteImage.setOnClickListener(onFavoriteClick(pos))
+                //If Game has been favorited update favoriteImage
+                favoriteImage.isActivated = game.favorited
             }
             this.pos = pos
         }

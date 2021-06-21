@@ -8,16 +8,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.challenge.kippo.databinding.FragmentFavoriteBinding
 import com.challenge.kippo.backend.view_model.MainViewModel
+import com.challenge.kippo.ui.main.GameCardAdapter
 
+//TODO probably will combine Trending and Favorite as the only change is the source of what they observe
+//Trending will observe trendingGames
+//Favorite will observe liveData from db on Favorite games
 class FavoriteFragment : Fragment(){
     private lateinit var mainViewModel: MainViewModel
     private lateinit var favoriteBinding: FragmentFavoriteBinding
+    private lateinit var gameCardAdapter: GameCardAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java).apply {
             //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
         }
+        gameCardAdapter = GameCardAdapter(activity!!)
+        gameCardAdapter.setOnFavoriteClick(mainViewModel::handleFavorite)
+        retainInstance = true
     }
 
     override fun onCreateView(

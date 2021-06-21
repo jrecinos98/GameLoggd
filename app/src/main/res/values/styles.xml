@@ -8,8 +8,10 @@
 
     <!-- Toolbar -->
     <style name="Toolbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <!-- Toolbar Background Color -->
+        <!-- Toolbar Background Color
         <item name="android:background">@color/white</item>
+        -->
+        <item name = "android:orientation"> vertical </item>
     </style>
 
     <style name="Toolbar.PopupMenu" parent="ThemeOverlay.AppCompat.Dark">
@@ -19,5 +21,26 @@
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">21sp</item>
         <item name="android:textStyle">normal</item>
+    </style>
+    <style name = "Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name = "android:textSize">28sp</item>
+        <item name = "android:letterSpacing">0.1</item>
+        <item name = "android:fontFamily">@font/poppins_bold</item>
+        <item name = "android:textColor">@color/black</item>
+    </style>
+    <style name = "TitleIcon" parent="Widget.AppCompat.ImageButton">
+        <item name = "android:backgroundTint">@color/colorAccent</item>
+        <item name = "android:scaleType">centerInside</item>
+        <item name = "android:layout_marginEnd">11dp</item>
+        <item name = "android:layout_width">wrap_content</item>
+        <item name = "android:layout_height">wrap_content</item>
+    </style>
+    <style name = "ProgressBar" parent = "Widget.AppCompat.ProgressBar.Horizontal">
+        <item name = "android:backgroundTint">@color/white</item>
+        <item name = "android:indeterminate">true</item>
+        <item name = "android:indeterminateOnly"> true </item>
+        <item name = "android:indeterminateTint"> @color/colorAccent</item>
+        <item name = "android:maxHeight">2dp</item>
+        <item name = "android:layout_marginTop">1dp</item>
     </style>
 </resources>
