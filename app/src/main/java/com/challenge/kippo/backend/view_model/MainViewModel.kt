@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.challenge.kippo.backend.Repository
 import com.challenge.kippo.backend.api.responses.Auth
+import com.challenge.kippo.backend.api.responses.Game
+import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.util.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,33 +23,19 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         "Hello world from section: $it"
     }
 
-    fun setIndex(index: Int) {
-        _index.value = index
-    }
-
     /**
-     * Get Games employs Kotlin coroutines functionality to notify of success or failure and deliver data
+     * Authenticate with the server and store the new Token
      */
-    fun getTrendingGames() = repository.getTrendingGames()
-
-
     fun authenticate(){
-        Log.d("AUTHENTICATE", "Started")
-
         GlobalScope.launch {
             val response = repository.authenticate()
-            Log.d("AUTHENTICATE", "Received Response")
-
             response.enqueue(object : Callback<Auth> {
                 override fun onFailure(call: Call<Auth>, t: Throwable) {
                     // Error logging in
                 }
-
                 override fun onResponse(call: Call<Auth>, response: Response<Auth>) {
                     val loginResponse = response.body()
-
                     if (loginResponse?.authToken != null && loginResponse.tokenType == "bearer") {
-                        Log.d("AUTHENTICATE", loginResponse.authToken)
                         launch {
                             repository.storeAuthToken(loginResponse.authToken)
                         }
@@ -58,6 +46,30 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
             })
         }
     }
+
+    /**
+     * Get Games employs Kotlin coroutines functionality to notify of success or failure and deliver data
+     * @return Livedata object to be observed by UI
+     */
+    fun getTrendingGames() = repository.getTrendingGames()
+
+    /**
+     * Stores a newly favorited game into the database
+     * @param game The game to be saved
+     */
+    private fun saveGame(game : GameData) {
+        repository.insert(game)
+    }
+
+    fun handleFavorite(game : GameData){
+        if(game.favorited){
+            saveGame(game)
+        }else{
+
+        }
+    }
+
+    fun getFavoriteGames() = repository.getFavoriteGames()
     /*
     fun fetchTrendingGames() : LiveData<List<Games>>{
         //TODO

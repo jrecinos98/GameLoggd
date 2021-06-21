@@ -7,17 +7,23 @@ import com.challenge.kippo.backend.api.responses.Auth
 import com.challenge.kippo.backend.api.responses.Cover
 import com.challenge.kippo.backend.api.responses.Game
 import com.challenge.kippo.backend.api.responses.Genre
+import com.challenge.kippo.backend.storage.LocalDatabase
+import com.challenge.kippo.backend.storage.daos.GameDao
 import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.util.Constants
 import com.challenge.kippo.util.Result
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import java.lang.Exception
 
 class Repository (private val context: Context, private val clientManager: ClientManager) {
+
+    val gameDao: GameDao = LocalDatabase.invoke(context).gameDao()
+
     /**
      * Authenticates the app to the IGDB API.
-     *
      */
     fun authenticate(): Call<Auth> {
         return clientManager.authenticate()
@@ -42,6 +48,26 @@ class Repository (private val context: Context, private val clientManager: Clien
                 emit(Result.success(data = response.body()?.let { generateGames(it) }))
             }
         }catch(e : Exception){
+            emit(Result.error(data = null, message = e.message ?: "Error occurred"))
+        }
+    }
+
+    /**
+     * Inserts game into the database
+     * @param game Game to be saved
+     */
+    fun insert(game : GameData){
+        //Runs in coroutine to not block main thread
+        GlobalScope.launch(Dispatchers.IO) {
+            gameDao.insert(game)
+        }
+    }
+
+    fun getFavoriteGames() = liveData(Dispatchers.IO) {
+        emit(Result.loading(data = null))
+        try{
+            emit(Result.success(data= gameDao.findFavoritesDescOrder()))
+        }catch (e:Exception){
             emit(Result.error(data = null, message = e.message ?: "Error occurred"))
         }
     }

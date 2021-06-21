@@ -14,13 +14,20 @@ data class GameData(
     @ColumnInfo(name= "cover_url")
     var coverUrl   : String,
     @ColumnInfo(name= "favorite")
-    val favorited  : Boolean,
+    var favorited  : Boolean,
     @ColumnInfo(name= "title")
     val title      : String,
     @ColumnInfo(name= "genre")
     var genre      : String,
     @ColumnInfo(name= "rating")
-    val percentage : Double
+    val rating : Double
     ){
-    constructor(game : Game) : this(game.id, Cover.generateHDImageURL(game.cover.imageID), false,game.name, Genre.listToString(game.genres!!), game.totalRating)
+    constructor(game : Game) :
+            this(   game.id,
+                    Cover.generateHDImageURL(game.cover.imageID),
+                    false,
+                    game.name,
+                    Genre.listToString(game.genres!!),
+                    game.aRating
+            )
 }

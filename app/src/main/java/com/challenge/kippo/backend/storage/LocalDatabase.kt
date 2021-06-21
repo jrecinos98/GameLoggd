@@ -27,7 +27,7 @@ abstract class LocalDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(context,
-            LocalDatabase::class.java, "todo-list.db")
+            LocalDatabase::class.java, "kippo.db")
             .build()
     }
 }

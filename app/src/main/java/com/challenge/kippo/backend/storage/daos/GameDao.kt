@@ -1,12 +1,10 @@
 package com.challenge.kippo.backend.storage.daos
 
 import androidx.lifecycle.LiveData
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.challenge.kippo.backend.storage.entities.GameData
 
+@Dao
 interface GameDao{
     @Query("SELECT * FROM GameData ORDER BY title DESC")
     fun getAllDescOrder(): List<GameData>
@@ -20,9 +18,12 @@ interface GameDao{
     @Insert
     fun insertAll(vararg todo: GameData)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(game : GameData)
+
     @Delete
-    fun delete(todo: GameData)
+    fun delete(game : GameData)
 
     @Update
-    fun updateTodo(vararg todos: GameData)
+    fun updateGame(game : GameData)
 }
