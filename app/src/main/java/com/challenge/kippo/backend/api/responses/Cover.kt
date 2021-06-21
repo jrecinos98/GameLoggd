@@ -25,7 +25,10 @@ data class Cover (
                         return query.toRequestBody("application/octet-stream".toMediaTypeOrNull())
 
                 }
-                fun generateHDImageURL(imageId : String ) : String {
+                fun generateHDImageURL(imageId : String? ) : String {
+                        if(imageId == null || imageId == ""){
+                                return ""
+                        }
                         //TODO NOTE: Not sure if all images are jpg.
                         // If not I will have to parse the id from url received with request
                         return "https://images.igdb.com/igdb/image/upload/t_cover_big/$imageId.jpg"

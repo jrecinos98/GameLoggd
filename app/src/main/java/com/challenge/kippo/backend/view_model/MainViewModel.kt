@@ -28,17 +28,8 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     /**
      * Get Games employs Kotlin coroutines functionality to notify of success or failure and deliver data
      */
-    fun getGames() = liveData(Dispatchers.IO) {
-        //Inform listener that data is loading
-        emit(Result.loading(data = null))
-        try {
-            //Fetch the data and notify if it succeeds
-            emit(Result.success(data = repository.getTrendingGames()))
-        } catch (exception: Exception) {
-            //Upon an exception the observers will be notified of failure and receive error message.
-            emit(Result.error(data = null, message = exception.message ?: "Error Occurred!"))
-        }
-    }
+    fun getTrendingGames() = repository.getTrendingGames()
+
 
     fun authenticate(){
         Log.d("AUTHENTICATE", "Started")

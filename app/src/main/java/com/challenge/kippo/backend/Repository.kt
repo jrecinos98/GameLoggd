@@ -37,11 +37,9 @@ class Repository (private val context: Context, private val clientManager: Clien
         emit(Result.loading(data = null))
         try{
             //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
-            val response = clientManager.fetchTrendingGames()?.execute()
-            if (response != null) {
-                if(response.isSuccessful){
-                    emit(Result.success(data = response.body()?.let { generateGames(it) }))
-                }
+            val response = clientManager.fetchTrendingGames().execute()
+            if(response.isSuccessful){
+                emit(Result.success(data = response.body()?.let { generateGames(it) }))
             }
         }catch(e : Exception){
             emit(Result.error(data = null, message = e.message ?: "Error occurred"))
@@ -53,6 +51,52 @@ class Repository (private val context: Context, private val clientManager: Clien
      * Artwork covers and genre requests are made to complete assembling the Game Object
      * @param gamesData List of GameResponses received from server
      */
+    private fun generateGames(gamesData : List<Game>) : List<GameData>{
+        val gameList = arrayListOf<GameData>()
+        //It is necessary to loop over all gameResponse objects to collect cover ids and genres ids
+        for (gameData in gamesData){
+            //Instantiates a Game Object with default cover url and genre
+            gameList.add(GameData(gameData))
+        }
+        return gameList
+    }
+
+    /**
+     * Fetches the game covers that match the ids provided in ids
+     * @param ids Must be in the form x1,x2,x3,x4 to work correctly //TODO consider passing a list instead
+     * @return returns a list of cover artwork that match the provided ids
+     */
+    fun fetchGameCovers(ids : String) : List<Cover>{
+        //Execute on same thread
+        val response = clientManager.fetchCovers(ids)?.execute()
+        var covers = listOf<Cover>()
+        if(response != null){
+            if(response.isSuccessful){
+                covers = response.body()!!
+
+            }
+        }
+        return covers
+    }
+
+    /**
+     * Fetches the genres that match with the ids provided
+     * @param ids Must be in the form x1,x2,x3,x4 to work correctly //TODO consider passing a list instead
+     * @return returns a list of genres that match the provided ids
+     */
+    private fun fetchGenres(ids : String) : List<Genre>{
+        //println("Genres: $ids")
+        val response = clientManager.fetchGenres(ids)?.execute()
+        var genres = listOf<Genre>()
+        if (response != null) {
+            if(response.isSuccessful){
+                genres = response.body()!!
+            }
+        }
+        return genres
+
+    }
+    /*
     private fun generateGames(gamesData : List<Game>) : List<GameData>{
         var coverIds = "" //Id of all cover artworks to be requested
         var genreIds = "" //Id of all genres to be requested
@@ -77,8 +121,8 @@ class Repository (private val context: Context, private val clientManager: Clien
                 if (index != gamesData.lastIndex)
                     coverIds += Constants.API.Query.PARAM_SEPARATOR
             }
-            if(gameData.genreId != null) {
-                val genre = gameData.genreId[0]
+            if(gameData.genres != null) {
+                val genre = gameData.genres[0]
                 genreIds += "$genre"
                 //If value at key already exists simply add game object
                 if(genreMapper.containsKey(genre)){
@@ -97,63 +141,6 @@ class Repository (private val context: Context, private val clientManager: Clien
 
             gameList.add(game)
         }
-        //TODO figure out how to call these methods asynchronously within a coroutine
-        val covers = fetchGameCovers(coverIds)
-        val genres = fetchGenres(genreIds)
-
-        //Assign cover url to games that have one.
-        for (cover in covers){
-            val gameData : GameData? = coverMapper[cover.game]
-            gameData?.coverUrl = Cover.generateHDImageURL(cover.imageID)
-        }
-        //Assign genre to games in gameList
-        for( genre in genres){
-            val pendingGames = genreMapper[genre.id]
-            if (pendingGames != null) {
-                for(game in pendingGames){
-                    game.genre = genre.name
-                }
-            }
-        }
-        return gameList
-    }
-
-    /**
-     * Helper function for generateGames
-     * Fetches the game covers that match the ids provided in ids
-     * @param ids Must be in the form x1,x2,x3,x4 to work correctly //TODO consider passing a list instead
-     * @return returns a list of cover artwork that match the provided ids
      */
-    fun fetchGameCovers(ids : String) : List<Cover>{
-        //Execute on same thread
-        val response = clientManager.fetchCovers(ids)?.execute()
-        var covers = listOf<Cover>()
-        if(response != null){
-            if(response.isSuccessful){
-                covers = response.body()!!
-
-            }
-        }
-        return covers
-    }
-
-    /**
-     * Helper function for generateGames
-     * Fetches the genres that match with the ids provided
-     * @param ids Must be in the form x1,x2,x3,x4 to work correctly //TODO consider passing a list instead
-     * @return returns a list of genres that match the provided ids
-     */
-    private fun fetchGenres(ids : String) : List<Genre>{
-        //println("Genres: $ids")
-        val response = clientManager.fetchGenres(ids)?.execute()
-        var genres = listOf<Genre>()
-        if (response != null) {
-            if(response.isSuccessful){
-                genres = response.body()!!
-            }
-        }
-        return genres
-
-    }
 
 }

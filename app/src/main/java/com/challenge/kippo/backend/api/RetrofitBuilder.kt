@@ -4,6 +4,7 @@ import com.challenge.kippo.BuildConfig
 import com.challenge.kippo.backend.api.requests.IgdbAuth
 import com.challenge.kippo.backend.api.requests.IgdbEndpoints
 import com.challenge.kippo.backend.api.requests.AuthInterceptor
+import com.challenge.kippo.backend.api.responses.Game
 import com.challenge.kippo.util.Constants
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -18,6 +19,7 @@ object RetrofitBuilder {
     private lateinit var igdbAuth : IgdbAuth
     private lateinit var savedToken : String
     private val loggerInterceptor : Interceptor
+    lateinit var authInterceptor : AuthInterceptor
 
 
     init{
@@ -28,21 +30,22 @@ object RetrofitBuilder {
     /**
      * Get IGDB endpoint request object
      */
+    //TODO test whether it is recreated every time after token invalidation
     fun getIgdbService(currentToken : String,
                        onAuthRefresh: (()-> String)?)
-    : IgdbEndpoints? {
+    : IgdbEndpoints {
         //Check if token has not become stale/expired
         if (!::igdbService.isInitialized || savedToken != currentToken) {
              savedToken= currentToken
-            val interceptor = AuthInterceptor(
+            authInterceptor = AuthInterceptor(
                     BuildConfig.CLIENT_ID,
                     savedToken
             )
             //Only add listener if non-null
             if(onAuthRefresh != null) {
-                interceptor.addOnAuthRefreshListener(onAuthRefresh)
+                authInterceptor.addOnAuthRefreshListener(onAuthRefresh)
             }
-            val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+            val client = OkHttpClient.Builder().addInterceptor(authInterceptor).build()
             val loggerClient = OkHttpClient.Builder().addInterceptor(loggerInterceptor).build()
             val retrofit = Retrofit.Builder()
                     .baseUrl(Constants.API.Requests.BASE_URL)
@@ -70,4 +73,8 @@ object RetrofitBuilder {
         }
         return igdbAuth
     }
+    fun getHeaderInterceptor() : AuthInterceptor{
+        return authInterceptor
+    }
+
 }
