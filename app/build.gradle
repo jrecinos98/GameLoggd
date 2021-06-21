@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 //API secret and ID (Not entirely secure as can be extracted by decompiling)
 def apiKeyPropertiesFile = rootProject.file("apikey.properties")
@@ -73,9 +74,9 @@ dependencies {
      */
     def room_version = "2.2.6"
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    kapt 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
 }

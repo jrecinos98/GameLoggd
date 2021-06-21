@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         mainActivityBinding
             .bottomNavigationView
             .setOnNavigationItemSelectedListener (onNavigationItemSelected())
-
         mainActivityBinding
             .viewPager
             .addOnPageChangeListener(onPageChange())
@@ -63,17 +62,14 @@ class MainActivity : AppCompatActivity() {
              //Kotlin is smart enough to not need a return value
              when (item.itemId) {
                  R.id.trending -> {
-                     Log.d("MAIN_ACTIVITY", "Clicked: " + item.title)
                      mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.TRENDING_FRAG_INDEX, true)
                     true
                  }
                  R.id.search -> {
-                     Log.d("MAIN_ACTIVITY", "Clicked: " + item.title)
                      mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.SEARCH_FRAG_INDEX, true)
                      true
                  }
                  R.id.favorite -> {
-                     Log.d("MAIN_ACTIVITY", "Clicked: " + item.title)
                      mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.FAVORITE_FRAG_INDEX, true)
                      true
                  }

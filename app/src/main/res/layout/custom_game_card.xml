@@ -24,7 +24,7 @@
         </ImageView>
         <ImageView
             android:id="@+id/card_favorite"
-            android:background="@drawable/ic_favorite_unsaved"
+            android:background="@drawable/selector_favorite_checked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerInside"

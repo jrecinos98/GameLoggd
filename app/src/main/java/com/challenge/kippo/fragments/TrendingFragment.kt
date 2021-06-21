@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.databinding.FragmentTrendingBinding
 import com.challenge.kippo.ui.main.GameCardAdapter
+import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Status
 
 
@@ -25,6 +26,7 @@ class TrendingFragment() :Fragment()  {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         gameCardAdapter = GameCardAdapter(activity!!)
+        gameCardAdapter.setOnFavoriteClick(mainViewModel::handleFavorite)
         retainInstance = true
     }
     override fun onCreateView(
@@ -36,15 +38,7 @@ class TrendingFragment() :Fragment()  {
         trendingBinding.trendingRecyclerView.apply {
             setHasFixedSize(true)
 //            layoutManager =  GridLayoutManager(context, GRID_COL_COUNT)
-            layoutManager = object : GridLayoutManager(context, GRID_COL_COUNT) {
-                override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
-                    // force height of viewHolder here, this will override layout_height from xml
-                    lp.width = (width / 2.20).toInt()
-                    lp.height = (lp.width * 1.6060).toInt()
-                    lp.setMargins(0,0,0,10)
-                    return true
-                }
-            }
+            layoutManager = MGridLayoutManager(context,GRID_COL_COUNT)
             adapter = gameCardAdapter
         }
         observeGames()
@@ -61,9 +55,17 @@ class TrendingFragment() :Fragment()  {
             it?.let { resource ->
                 when (resource.status) {
                     Status.SUCCESS -> {
+
+                        trendingBinding.trendingProgressbar.visibility = View.GONE
                         resource.data?.let { list ->
                             gameCardAdapter.setGames(list)
                         }
+                    }
+                    Status.LOADING -> {
+                        trendingBinding.trendingProgressbar.visibility = View.VISIBLE
+                    }
+                    Status.ERROR ->{
+                        trendingBinding.trendingProgressbar.visibility = View.GONE
                     }
                 }
 

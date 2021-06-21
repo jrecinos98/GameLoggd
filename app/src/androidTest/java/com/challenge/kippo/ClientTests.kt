@@ -67,7 +67,6 @@ class ClientTests {
     }
     @Test
     fun reAuthenticationTest(){
-        Log.d("TEST", "HEY")
         val oldToken = sessionManager.fetchAuthToken()
         val newToken = clientManager.reAuthenticate()
         assert(oldToken != newToken)

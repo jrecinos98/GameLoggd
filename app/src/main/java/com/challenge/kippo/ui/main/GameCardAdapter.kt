@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide
 import com.challenge.kippo.R
 import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.databinding.CustomGameCardBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mchat.recinos.Activities.Home.Adapters.HomePagerAdapter
 
 
 /**
@@ -20,6 +22,7 @@ import com.challenge.kippo.databinding.CustomGameCardBinding
  */
 class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameCardAdapter.GameCardHolder>(){
     private var gameList = ArrayList<GameData>()
+    private lateinit var listener : (game : GameData)-> Unit
     /**
      * Wrapper class for each recycler view item.
      */
@@ -45,7 +48,9 @@ class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameC
                         .into(gameCover)
                 cardTitle.setText(game.title)
                 cardGenre.setText(game.genre)
-                cardRating.setText("${game.percentage.toInt()}%")
+                cardRating.setText("${game.rating.toInt()}%")
+                //Set the listener for the favorite image
+                favoriteImage.setOnClickListener(onFavoriteClick(pos))
             }
             this.pos = pos
         }
@@ -93,7 +98,6 @@ class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameC
         return gameList.size
     }
     fun setGames(gameData: List<GameData>){
-        Log.d("GAME_ADAPTER", "Received Game data")
         gameList.apply {
             clear()
             addAll(gameData)
@@ -101,6 +105,21 @@ class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameC
         //Triggers a re-draw of the updated views.
         notifyDataSetChanged()
     }
+
+    fun setOnFavoriteClick(onFavorite : (game : GameData)-> Unit){
+        listener = onFavorite
+    }
+
+    private fun onFavoriteClick(position: Int): View.OnClickListener {
+        return View.OnClickListener { view ->
+            val game = gameList[position]
+            //Invert the activated state
+            view.isActivated = !view.isActivated
+            game.favorited = view.isActivated
+            listener(game)
+        }
+    }
+
     companion object{
         public const val GRID_COL_COUNT = 2
 
