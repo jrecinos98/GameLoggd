@@ -55,6 +55,18 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     fun getTrendingGames() = repository.getTrendingGames()
 
     /**
+     * Searches for games that match the  provided name string
+     * @param name String to use to match to a name
+     */
+    fun searchGame(name : String) =  repository.searchGame(name)
+
+    /**
+     * Return a livedata object that will be updated every time a searchGame request is made
+     * @return Livedata to observe to make UI changes after searching
+     */
+    fun getSearchObservable() = repository.getSearchObservable()
+
+    /**
      * Returns a list of games that have been marked as favorite and reside in the local database
      * The list sorted by Rating in DESC order
      * @return Sorted list of favorite games
@@ -89,11 +101,6 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
      */
     private fun deleteGame(game : GameData){
         repository.delete(game)
-    }
-
-    fun search(game : String) : Unit {//LiveData<List<Games>>{
-        //TODO
-        //return MutableLiveData(listOf(Games(0, "", "")))
     }
 
 }

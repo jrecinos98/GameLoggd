@@ -11,6 +11,7 @@ import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.databinding.FragmentFavoriteBinding
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.ui.main.GameCardAdapter
+import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
 import com.challenge.kippo.util.Status
@@ -28,7 +29,7 @@ class FavoriteFragment : Fragment(){
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java).apply {
             //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
         }
-        gameCardAdapter = GameCardAdapter(activity!!)
+        gameCardAdapter = GameCardAdapter(this)
         gameCardAdapter.setOnFavoriteClick(mainViewModel::handleFavorite)
         retainInstance = true
     }
@@ -42,6 +43,7 @@ class FavoriteFragment : Fragment(){
             setHasFixedSize(true)
             layoutManager = MGridLayoutManager(context, Constants.GRID_COL_COUNT)
             adapter = gameCardAdapter
+            addItemDecoration(GridItemDecoration(Constants.GRID_ITEM_SPACING))
         }
         observeFavoriteGames()
         return favoriteBinding.root
@@ -53,7 +55,7 @@ class FavoriteFragment : Fragment(){
      * This allows the UI to automatically update
      */
     private fun observeFavoriteGames(){
-        mainViewModel.getFavoriteGames().observe(this, { favoriteGames ->
+        mainViewModel.getFavoriteGames().observe(viewLifecycleOwner, { favoriteGames ->
             favoriteBinding.favoriteProgressbar.visibility = View.GONE
             gameCardAdapter.setGames(favoriteGames)
         })

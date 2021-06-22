@@ -34,12 +34,13 @@ data class Genre (
                         break
                     }
                     if (str != "" && str.length <= 10 && genre.name.length <= 10) {
-                        str += genre.name + ","
+                        str += genre.name + ", "
                     } else if (str == "") {
-                        str += genre.name + ","
+                        str += genre.name + ", "
                     }
                 }
-                return str.substring(0, str.lastIndex)
+                //Cutout the last ", " FIXME
+                return str.substring(0, str.lastIndex-1)
             }
             else{
                 return ""

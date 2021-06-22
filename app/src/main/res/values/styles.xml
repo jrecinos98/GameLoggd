@@ -11,7 +11,7 @@
         <!-- Toolbar Background Color
         <item name="android:background">@color/white</item>
         -->
-        <item name = "android:orientation"> vertical </item>
+        <item name = "android:orientation"> horizontal </item>
     </style>
 
     <style name="Toolbar.PopupMenu" parent="ThemeOverlay.AppCompat.Dark">
@@ -24,12 +24,35 @@
         <item name = "android:fontFamily">@font/poppins_bold</item>
         <item name = "android:textColor">@color/black</item>
     </style>
-    <style name = "TitleIcon" parent="Widget.AppCompat.ImageButton">
+    <style name = "Toolbar.Icon" parent="Widget.AppCompat.ImageButton">
         <item name = "android:backgroundTint">@color/colorAccent</item>
         <item name = "android:scaleType">centerInside</item>
-        <item name = "android:layout_marginEnd">11dp</item>
+        <item name = "android:layout_marginEnd">15dp</item>
         <item name = "android:layout_width">wrap_content</item>
         <item name = "android:layout_height">wrap_content</item>
+    </style>
+
+    <style name = "Toolbar.Cancel" parent="Widget.AppCompat.ImageButton">
+        <item name = "android:scaleType">centerInside</item>
+        <item name = "android:layout_marginEnd">35dp</item>
+    </style>
+    <style name = "Toolbar.TextInputLayout" parent="Widget.Design.TextInputLayout">
+        <item name = "android:textColorHint">@color/colorAccent</item> <!-- text input hint -->
+        <item name = "colorControlNormal">@color/colorAccent</item> <!-- text input underline -->
+    </style>
+    <style name = "Toolbar.EditText" parent="Widget.AppCompat.EditText">
+        <item name = "android:drawablePadding">20dp</item>
+        <item name = "android:textColor">@color/black</item>
+        <item name = "android:textSize">26sp</item>
+        <item name = "android:textStyle">normal</item>
+        <item name = "android:capitalize">characters</item>
+        <item name = "android:fontFamily">@font/poppins_bold</item>
+        <item name = "android:hint">@string/searchHint</item>
+        <item name = "android:textColorHint">@color/searchCancel</item>
+        <item name = "android:textCursorDrawable">@drawable/color_cursor</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
     </style>
     <style name = "ProgressBar" parent = "Widget.AppCompat.ProgressBar.Horizontal">
         <item name = "android:backgroundTint">@color/white</item>

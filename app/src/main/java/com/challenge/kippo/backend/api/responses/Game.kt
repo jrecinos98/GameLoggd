@@ -18,7 +18,7 @@ data class Game(
         @SerializedName(value = "genres")
         val genres : List<Genre>?,
         @SerializedName(value = "cover")
-        val cover : Cover,
+        val cover : Cover?,
         @SerializedName(value = "rating")
         val rating : Double,
         @SerializedName(value = "rating_count")

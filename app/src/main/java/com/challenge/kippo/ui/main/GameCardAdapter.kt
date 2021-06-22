@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.challenge.kippo.R
 import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.databinding.CustomGameCardBinding
+import com.challenge.kippo.fragments.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mchat.recinos.Activities.Home.Adapters.HomePagerAdapter
 
@@ -20,7 +22,7 @@ import com.mchat.recinos.Activities.Home.Adapters.HomePagerAdapter
 /**
  * Adapter for RecyclerViews that will display Game Cards (cover, title, genre, rating)
  */
-class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameCardAdapter.GameCardHolder>(){
+class GameCardAdapter(private val context: Fragment) : RecyclerView.Adapter<GameCardAdapter.GameCardHolder>(){
     private var gameList = ArrayList<GameData>()
     private lateinit var listener : (game : GameData)-> Unit
     /**
@@ -49,10 +51,14 @@ class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameC
                 cardTitle.setText(game.title)
                 cardGenre.setText(game.genre)
                 cardRating.setText("${game.rating.toInt()}%")
-                //Set the listener for the favorite image
-                favoriteImage.setOnClickListener(onFavoriteClick(pos))
-                //If Game has been favorited update favoriteImage
-                favoriteImage.isActivated = game.favorited
+                //The search result GameCards do not include an option to favorite games
+                if(context::class.java != SearchFragment::class.java) {
+                    favoriteImage.visibility = View.VISIBLE
+                    //Set the listener for the favorite image
+                    favoriteImage.setOnClickListener(onFavoriteClick(pos))
+                    //If Game has been favorited update favoriteImage
+                    favoriteImage.isActivated = game.favorited
+                }
             }
             this.pos = pos
         }
@@ -120,6 +126,7 @@ class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameC
      * @param gameData The updated list of GameData
      */
     fun setGames(gameData: List<GameData>){
+        Log.d("ADAPTER", "called")
         gameList = gameData as ArrayList<GameData>
         //Triggers a re-draw of the updated views.
         notifyDataSetChanged()

@@ -27,7 +27,7 @@ data class Cover (
                 }
                 fun generateHDImageURL(imageId : String? ) : String {
                         if(imageId == null || imageId == ""){
-                                return ""
+                                return "https://jago.co.nz/assets/camaleon_cms/image-not-found-4a963b95bf081c3ea02923dceaeb3f8085e1a654fc54840aac61a57a60903fef.png"
                         }
                         //TODO NOTE: Not sure if all images are jpg.
                         // If not I will have to parse the id from url received with request

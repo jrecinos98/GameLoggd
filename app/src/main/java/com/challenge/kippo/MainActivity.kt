@@ -39,8 +39,9 @@ class MainActivity : AppCompatActivity() {
         homePagerAdapter = HomePagerAdapter(this, supportFragmentManager)
         //Necessary to remove the tint that changes icon color.
         mainActivityBinding.bottomNavigationView.itemIconTintList = null
-
         mainActivityBinding.viewPager.adapter = homePagerAdapter
+        //This way Favorite fragment and Trending fragment are not removed and reloaded constantly
+        mainActivityBinding.viewPager.offscreenPageLimit = 2
         mainActivityBinding
             .bottomNavigationView
             .setOnNavigationItemSelectedListener (onNavigationItemSelected())

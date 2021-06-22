@@ -28,10 +28,12 @@ data class GameData(
     val rating : Int = actualRating.toInt()
     constructor(game : Game) :
             this(   game.id,
-                    Cover.generateHDImageURL(game.cover.imageID),
+                    //TODO test for null Covers.
+                    Cover.generateHDImageURL(game.cover?.imageID),
                     false,
                     game.name,
-                    Genre.listToString(game.genres!!),
+                    //TODO test games that lack a genre
+                    Genre.listToString(game.genres),
                     game.aRating
             )
 

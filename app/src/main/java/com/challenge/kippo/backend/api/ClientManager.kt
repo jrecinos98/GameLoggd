@@ -60,7 +60,13 @@ class ClientManager (){
      */
     fun fetchTrendingGames() : Call<List<Game>> {
         return igdbService().fetchGames(Game.buildTrendingRequestBody())
+    }
 
+    /**
+     * Builds the appropriate HTTP request body query to search for a game
+     */
+    fun searchGame(name: String) : Call<List<Game>>{
+        return igdbService().fetchGames(Game.buildSearchRequestBody(name))
     }
     //Should be no need to use these .
     fun fetchCovers(ids : String) = igdbService().fetchCovers(Cover.buildRequestBody(ids))

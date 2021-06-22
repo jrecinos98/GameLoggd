@@ -12,35 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/trending_recycler_view"
+        app:layout_constraintBottom_toTopOf="@id/trending_progressbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:theme="@style/Toolbar"
         app:popupTheme="@style/Toolbar.PopupMenu"
         app:titleTextColor="@color/white" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="start"
-            android:layout_marginTop="20dp"
-            >
-
-            <ImageView
-                android:id="@+id/trending_icon"
-                android:layout_gravity="bottom"
-                android:background="@drawable/ic_trending_tab_selected"
-                style="@style/TitleIcon"
-                />
-            <TextView
-                android:id="@+id/trending_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/trendingTitle"
-                style="@style/Toolbar.Title"
-                />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/trending_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favoriteTitle"
+            android:gravity="center_vertical"
+            style="@style/Toolbar.Title"
+            app:drawableLeftCompat="@drawable/ic_trending_tab_selected"
+            app:drawableTint="@color/colorAccent"
+            android:drawablePadding="11dp"
+            android:paddingTop="15dp"
+            />
     </androidx.appcompat.widget.Toolbar>
     <ProgressBar
         android:id="@+id/trending_progressbar"

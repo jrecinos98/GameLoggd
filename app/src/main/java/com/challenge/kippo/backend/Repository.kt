@@ -3,6 +3,7 @@ package com.challenge.kippo.backend
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.api.responses.Auth
@@ -23,11 +24,12 @@ import java.lang.Exception
 class Repository (private val context: Context, private val clientManager: ClientManager) {
 
     private val gameDao: GameDao = LocalDatabase.invoke(context).gameDao()
-    private lateinit var favorites : LiveData<List<GameData>>
+    //private lateinit var favorites : LiveData<List<GameData>>
+    private var searchResults = MutableLiveData<Result<List<GameData>>>()
     init {
         //Fetch favorite game LiveData
         GlobalScope.launch {
-            favorites = gameDao.findFavoritesDescOrder()
+            //favorites = gameDao.findFavoritesDescOrder()
         }
     }
 
@@ -66,6 +68,27 @@ class Repository (private val context: Context, private val clientManager: Clien
             }
         }catch(e : Exception){
             emit(Result.error(data = null, message = e.message ?: "Error occurred"))
+        }
+    }
+    fun getSearchObservable() : LiveData<Result<List<GameData>>>{
+        return searchResults
+    }
+    fun searchGame(name : String){
+        GlobalScope.launch(Dispatchers.IO) {
+            //Call post value as the value will be updated from a different thread
+            searchResults.postValue(Result.loading(data = null))
+            try {
+                //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
+                val response = clientManager.searchGame(name).execute()
+                if(response.isSuccessful) {
+                    //If response succeeded but body is empty then no matches were found
+                    val gameList = generateGames(response.body())
+                    //The gameList will be empty if response.body() was null
+                    searchResults.postValue(Result.success(data = gameList))
+                }
+            } catch (e: Exception) {
+                searchResults.postValue(Result.error(data = null, message = e.message ?: "Error occurred"))
+            }
         }
     }
     /*
@@ -108,7 +131,10 @@ class Repository (private val context: Context, private val clientManager: Clien
      * so that the right favorite icon is used when displayed
      * @param gamesData List of GameResponses received from server
      */
-    private fun generateGames(gamesData : List<Game>) : List<GameData>{
+    private fun generateGames(gamesData : List<Game>?) : List<GameData>{
+        if(gamesData == null){
+            return listOf()
+        }
         val gameList = arrayListOf<GameData>()
         //It is necessary to loop over all gameResponse objects to collect cover ids and genres ids
         for (gameData in gamesData){

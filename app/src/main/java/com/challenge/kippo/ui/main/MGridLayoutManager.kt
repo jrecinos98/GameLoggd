@@ -15,7 +15,7 @@ class MGridLayoutManager(context: Context, colNum : Int) : GridLayoutManager(con
         //Multiple height by the ratio of height and width to mimic design
         lp.height = (lp.width * 1.6060).toInt()
         //Add a margin in between recyclerview items
-        lp.setMargins(20,0,0,30)
+        lp.setMargins(0,0,0,0)
         return true
     }
 }
