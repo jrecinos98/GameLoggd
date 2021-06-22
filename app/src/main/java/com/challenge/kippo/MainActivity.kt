@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
         val apiHelper = ClientManager(this)
         //Creates a MainViewModel through its designated Factory
         viewModel = ViewModelProvider(this, ViewModelFactory(this, apiHelper)).get()
-        viewModel.authenticate()
+        //TODO consider removing as the Interceptor can handle authentication when needed.
+        //viewModel.authenticate()
         setUpUI()
         setUpObservers()
 

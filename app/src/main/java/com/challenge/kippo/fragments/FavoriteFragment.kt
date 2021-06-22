@@ -15,9 +15,9 @@ import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
 import com.challenge.kippo.util.Status
 
-//TODO probably will combine Trending and Favorite as the only change is the source of what they observe
-//Trending will observe trendingGames
-//Favorite will observe liveData from db on Favorite games
+/**
+ * Fragment to display favorite games stored on local Room Database in a RecyclerView
+ */
 class FavoriteFragment : Fragment(){
     private lateinit var mainViewModel: MainViewModel
     private lateinit var favoriteBinding: FragmentFavoriteBinding
@@ -43,11 +43,16 @@ class FavoriteFragment : Fragment(){
             layoutManager = MGridLayoutManager(context, Constants.GRID_COL_COUNT)
             adapter = gameCardAdapter
         }
-        observeGames()
+        observeFavoriteGames()
         return favoriteBinding.root
     }
 
-    private fun observeGames(){
+    /**
+     * Observes LiveData object returned by viewModel to be notified of updates and changes
+     * to the list of favorite games.
+     * This allows the UI to automatically update
+     */
+    private fun observeFavoriteGames(){
         mainViewModel.getFavoriteGames().observe(this, { favoriteGames ->
             favoriteBinding.favoriteProgressbar.visibility = View.GONE
             gameCardAdapter.setGames(favoriteGames)

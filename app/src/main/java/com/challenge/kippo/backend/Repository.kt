@@ -81,7 +81,7 @@ class Repository (private val context: Context, private val clientManager: Clien
      */
 
     /**
-     * Inserts game into the database
+     * Inserts game into the game table in database
      * @param game Game to be saved
      */
     fun insert(game : GameData){
@@ -91,6 +91,10 @@ class Repository (private val context: Context, private val clientManager: Clien
         }
     }
 
+    /**
+     * Deletes a game entry from the game table in database
+     * @param game Game to be deleted
+     */
     fun delete(game : GameData){
         //Runs in coroutine to not block main thread
         GlobalScope.launch(Dispatchers.IO) {

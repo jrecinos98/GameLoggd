@@ -17,7 +17,10 @@ import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
 import com.challenge.kippo.util.Status
 
-
+/**
+ * Fragment to display trending/popular games based on IGDB fields
+ * Game data is fetched with Retrofit (and OkHttp) and displayed in RecyclerView
+ */
 class TrendingFragment() :Fragment()  {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var trendingBinding: FragmentTrendingBinding
@@ -42,16 +45,18 @@ class TrendingFragment() :Fragment()  {
             layoutManager = MGridLayoutManager(context,Constants.GRID_COL_COUNT)
             adapter = gameCardAdapter
         }
-        observeGames()
+        observeTrendingGames()
 
 
         return trendingBinding.root
 
     }
 
-
-
-    private fun observeGames(){
+    /**
+     * Observes LiveData object returned by viewModel to be notified of updates and changes
+     * to the list of trending games
+     */
+    private fun observeTrendingGames(){
         mainViewModel.getTrendingGames().observe(this, Observer {
             it?.let { resource ->
                 when (resource.status) {

@@ -26,6 +26,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     /**
      * Authenticate with the server and store the new Token
      */
+    //TODO consider if necessary as the interceptor automatically authenticates
     fun authenticate(){
         GlobalScope.launch {
             val response = repository.authenticate()
@@ -53,6 +54,19 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
      */
     fun getTrendingGames() = repository.getTrendingGames()
 
+    /**
+     * Returns a list of games that have been marked as favorite and reside in the local database
+     * The list sorted by Rating in DESC order
+     * @return Sorted list of favorite games
+     */
+    fun getFavoriteGames() : LiveData<List<GameData>> = repository.getFavoriteGames()
+
+    /**
+     * General method to be passed as callback method for when favorite icon is clicked
+     * Depending on the favorite status of the object it will either add (if false)
+     * or remove (if true) from the database
+     * @param game Game whose favorite icon was clicked
+     */
     fun handleFavorite(game : GameData){
         if(game.favorited){
             saveGame(game)
@@ -69,25 +83,17 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         repository.insert(game)
     }
 
+    /**
+     * Triggers a delete in game table
+     * @param game Game to be deleted from database
+     */
     private fun deleteGame(game : GameData){
         repository.delete(game)
     }
 
-    fun getFavoriteGames() : LiveData<List<GameData>> = repository.getFavoriteGames()
-    /*
-    fun fetchTrendingGames() : LiveData<List<Games>>{
+    fun search(game : String) : Unit {//LiveData<List<Games>>{
         //TODO
-        return MutableLiveData(listOf(Games( 0, "", "")))
+        //return MutableLiveData(listOf(Games(0, "", "")))
     }
 
-    fun fetchFavoriteGames() : LiveData<List<Games>>{
-        //TODO
-        return MutableLiveData(listOf(Games(0, "", "")))
-    }
-
-    fun search(game : String) : LiveData<List<Games>>{
-        //TODO
-        return MutableLiveData(listOf(Games(0, "", "")))
-    }
-    */
 }

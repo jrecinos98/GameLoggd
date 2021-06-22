@@ -99,19 +99,12 @@ class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameC
     override fun getItemCount(): Int {
         return gameList.size
     }
-    fun setGames(gameData: List<GameData>){
-        gameList.apply {
-            clear()
-            addAll(gameData)
-        }
-        //Triggers a re-draw of the updated views.
-        notifyDataSetChanged()
-    }
 
-    fun setOnFavoriteClick(onFavorite : (game : GameData)-> Unit){
-        listener = onFavorite
-    }
-
+    /**
+     * Triggered when Favorite icon is clicked. It updates the icon state and invokes
+     * the call back method if it has been set
+     * @param position The index the GameData, whose favorite icon was pressed, is in the gameList
+     */
     private fun onFavoriteClick(position: Int): View.OnClickListener {
         return View.OnClickListener { view ->
             val game = gameList[position]
@@ -120,6 +113,24 @@ class GameCardAdapter(private val context: Context) : RecyclerView.Adapter<GameC
             game.favorited = view.isActivated
             listener(game)
         }
+    }
+
+    /**
+     * Updates the list of games currently displayed
+     * @param gameData The updated list of GameData
+     */
+    fun setGames(gameData: List<GameData>){
+        gameList = gameData as ArrayList<GameData>
+        //Triggers a re-draw of the updated views.
+        notifyDataSetChanged()
+    }
+
+    /**
+     * Assigns a callback method that will be invoked when the favorite icon is clicked
+     * @param onFavorite The callback to be invoked
+     */
+    fun setOnFavoriteClick(onFavorite : (game : GameData)-> Unit){
+        listener = onFavorite
     }
 
     companion object{
