@@ -79,4 +79,7 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     kapt 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
+    //Debug implementation means that this is only available during debug (room)
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
 }

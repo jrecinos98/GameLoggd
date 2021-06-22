@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/shape_rect_border"
+    style="@style/GameCard"
     >
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -55,27 +53,15 @@
                 android:id="@+id/card_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:ellipsize="end"
                 android:fontFamily="@font/poppins_medium"
-                android:maxLines="1"
-                android:text="@string/title"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textAlignment="textStart"
-                android:textStyle="bold" />
+                style="@style/GameCard.Title"
+                />
 
             <TextView
                 android:id="@+id/card_genre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:ellipsize="end"
-                android:fontFamily="@font/poppins_regular"
-                android:maxLines="1"
-                android:textAlignment="textStart"
-                android:textSize="12sp"
-                android:textColor="@color/genreTitle"
+                style="@style/GameCard.Genre"
                 />
         </LinearLayout>
 

@@ -17,7 +17,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:theme="@style/Toolbar"
         app:popupTheme="@style/Toolbar.PopupMenu"
-        app:titleTextAppearance="@style/Toolbar.TitleText"
         app:titleTextColor="@color/white" >
 
         <LinearLayout
@@ -38,13 +37,13 @@
                 android:id="@+id/trending_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/favorite"
-                style="@style/Title"
+                android:text="@string/favoriteTitle"
+                style="@style/Toolbar.Title"
                 />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
     <ProgressBar
-        android:id="@+id/trending_progressbar"
+        android:id="@+id/favorite_progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

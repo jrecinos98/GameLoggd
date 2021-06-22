@@ -17,7 +17,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:theme="@style/Toolbar"
         app:popupTheme="@style/Toolbar.PopupMenu"
-        app:titleTextAppearance="@style/Toolbar.TitleText"
         app:titleTextColor="@color/white" >
 
         <LinearLayout
