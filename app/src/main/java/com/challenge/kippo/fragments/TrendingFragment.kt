@@ -14,6 +14,7 @@ import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.databinding.FragmentTrendingBinding
 import com.challenge.kippo.ui.main.GameCardAdapter
 import com.challenge.kippo.ui.main.MGridLayoutManager
+import com.challenge.kippo.util.Constants
 import com.challenge.kippo.util.Status
 
 
@@ -38,7 +39,7 @@ class TrendingFragment() :Fragment()  {
         trendingBinding.trendingRecyclerView.apply {
             setHasFixedSize(true)
 //            layoutManager =  GridLayoutManager(context, GRID_COL_COUNT)
-            layoutManager = MGridLayoutManager(context,GRID_COL_COUNT)
+            layoutManager = MGridLayoutManager(context,Constants.GRID_COL_COUNT)
             adapter = gameCardAdapter
         }
         observeGames()
@@ -74,13 +75,6 @@ class TrendingFragment() :Fragment()  {
 
     }
     companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
-        const val GRID_COL_COUNT = 2
-
         /**
          * Returns a new instance of this fragment.
          */

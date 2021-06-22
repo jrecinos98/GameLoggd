@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.challenge.kippo.backend.storage.daos.GameDao
 import com.challenge.kippo.backend.storage.entities.GameData
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @Database(
     entities = [GameData::class],
@@ -29,6 +32,16 @@ abstract class LocalDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(context,
             LocalDatabase::class.java, "kippo.db")
+            .addCallback(object: Callback(){
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    // moving to a new thread
+                    GlobalScope.launch {
+                        //Can insert test data to database
+                        //invoke(context).gameDao().insert(PREPOPULATE_DATA)
+                    }
+                }
+            })
             .build()
     }
 }

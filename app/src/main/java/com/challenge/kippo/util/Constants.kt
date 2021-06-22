@@ -3,6 +3,7 @@ package com.challenge.kippo.util
 object Constants{
     //06/01/2020 at 00:00
     const val LAST_YEAR_UNIX_TIME = 1590994800
+    const val GRID_COL_COUNT = 2
     object API{
         object Requests{
             const val BASE_URL = "https://api.igdb.com/v4/"

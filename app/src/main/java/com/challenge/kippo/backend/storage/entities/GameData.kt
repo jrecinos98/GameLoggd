@@ -8,7 +8,7 @@ import com.challenge.kippo.backend.api.responses.Cover
 import com.challenge.kippo.backend.api.responses.Game
 import com.challenge.kippo.backend.api.responses.Genre
 
-@Entity
+@Entity(tableName = "games")
 data class GameData(
     @PrimaryKey(autoGenerate = true)
     val id : Int,

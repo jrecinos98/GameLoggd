@@ -53,6 +53,14 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
      */
     fun getTrendingGames() = repository.getTrendingGames()
 
+    fun handleFavorite(game : GameData){
+        if(game.favorited){
+            saveGame(game)
+        }else{
+            deleteGame(game)
+        }
+    }
+
     /**
      * Stores a newly favorited game into the database
      * @param game The game to be saved
@@ -61,15 +69,11 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         repository.insert(game)
     }
 
-    fun handleFavorite(game : GameData){
-        if(game.favorited){
-            saveGame(game)
-        }else{
-
-        }
+    private fun deleteGame(game : GameData){
+        repository.delete(game)
     }
 
-    fun getFavoriteGames() = repository.getFavoriteGames()
+    fun getFavoriteGames() : LiveData<List<GameData>> = repository.getFavoriteGames()
     /*
     fun fetchTrendingGames() : LiveData<List<Games>>{
         //TODO

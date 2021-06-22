@@ -1,6 +1,8 @@
 package com.challenge.kippo.backend
 
 import android.content.Context
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.api.responses.Auth
@@ -20,7 +22,14 @@ import java.lang.Exception
 
 class Repository (private val context: Context, private val clientManager: ClientManager) {
 
-    val gameDao: GameDao = LocalDatabase.invoke(context).gameDao()
+    private val gameDao: GameDao = LocalDatabase.invoke(context).gameDao()
+    private lateinit var favorites : LiveData<List<GameData>>
+    init {
+        //Fetch favorite game LiveData
+        GlobalScope.launch {
+            favorites = gameDao.findFavoritesDescOrder()
+        }
+    }
 
     /**
      * Authenticates the app to the IGDB API.
@@ -36,21 +45,40 @@ class Repository (private val context: Context, private val clientManager: Clien
 
 
     /**
+     * Retrieves all the games that have been favorite by the user (Their favorite field is true)
+     */
+    fun getFavoriteGames() = gameDao.findFavoritesDescOrder()
+
+    /**
      * Retrieves the trending Games from IGDB
      * @return LiveData object to be observed by Activity/Fragment to be notified of changes
      */
+    //TODO consider if it is best to wrap with livedata on the view model instead?
+    //This way the repository has no knowledge of the bridge to the UI and is interchangeable
     fun getTrendingGames() = liveData(Dispatchers.IO) {
         emit(Result.loading(data = null))
         try{
             //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
             val response = clientManager.fetchTrendingGames().execute()
+            val gameList =  response.body()?.let { generateGames(it) }
             if(response.isSuccessful){
-                emit(Result.success(data = response.body()?.let { generateGames(it) }))
+                emit(Result.success(data = gameList))
             }
         }catch(e : Exception){
             emit(Result.error(data = null, message = e.message ?: "Error occurred"))
         }
     }
+    /*
+    liveData(Dispatchers.IO) {
+        emit(Result.loading(data = null))
+        try{
+        //NOTE: Valid when findFavoriteDescOrder returns List<GameData> (NO LIVE DATA)
+            emit(Result.success(data= gameDao.findFavoritesDescOrder()))
+        }catch (e:Exception){
+            emit(Result.error(data = null, message = e.message ?: "Error occurred"))
+        }
+    }
+     */
 
     /**
      * Inserts game into the database
@@ -63,18 +91,17 @@ class Repository (private val context: Context, private val clientManager: Clien
         }
     }
 
-    fun getFavoriteGames() = liveData(Dispatchers.IO) {
-        emit(Result.loading(data = null))
-        try{
-            emit(Result.success(data= gameDao.findFavoritesDescOrder()))
-        }catch (e:Exception){
-            emit(Result.error(data = null, message = e.message ?: "Error occurred"))
+    fun delete(game : GameData){
+        //Runs in coroutine to not block main thread
+        GlobalScope.launch(Dispatchers.IO) {
+            gameDao.delete(game)
         }
     }
 
     /**
      * Assembles the Game objects from the received GameResponses.
-     * Artwork covers and genre requests are made to complete assembling the Game Object
+     * Id checked against favorite games to set the favorite field to true
+     * so that the right favorite icon is used when displayed
      * @param gamesData List of GameResponses received from server
      */
     private fun generateGames(gamesData : List<Game>) : List<GameData>{
@@ -82,11 +109,14 @@ class Repository (private val context: Context, private val clientManager: Clien
         //It is necessary to loop over all gameResponse objects to collect cover ids and genres ids
         for (gameData in gamesData){
             //Instantiates a Game Object with default cover url and genre
-            gameList.add(GameData(gameData))
+            val game = GameData(gameData)
+            if(gameDao.isFavorite(game.id)){
+                game.favorited = true
+            }
+            gameList.add(game)
         }
         return gameList
     }
-
     /**
      * Fetches the game covers that match the ids provided in ids
      * @param ids Must be in the form x1,x2,x3,x4 to work correctly //TODO consider passing a list instead
