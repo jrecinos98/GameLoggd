@@ -20,6 +20,13 @@ import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
 
+/**
+ * Child Fragment of Search Fragment
+ * Displays a list of games if the result is successful
+ * Displays an error fragment if the result is empty (No game matched search param)
+ * If a gameCardAdapter is provided it will return The fragment with RecyclerView
+ * @param gameCardAdapter Adapter to be used for the Recyclerview if successful
+ */
 class SearchResultFragment(private val gameCardAdapter: GameCardAdapter? = null) : Fragment() {
     private lateinit var searchBinding: FragmentSearchSuccessBinding
 

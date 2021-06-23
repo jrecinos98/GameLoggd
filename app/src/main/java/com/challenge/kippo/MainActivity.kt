@@ -1,7 +1,6 @@
 package com.challenge.kippo
 
 import android.os.Bundle
-import android.util.Log
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -11,7 +10,7 @@ import com.challenge.kippo.databinding.ActivityMainBinding
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.backend.view_model.ViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.mchat.recinos.Activities.Home.Adapters.HomePagerAdapter
+import com.challenge.kippo.ui.main.HomePagerAdapter
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityBinding: ActivityMainBinding
@@ -28,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         //TODO consider removing as the Interceptor can handle authentication when needed.
         //viewModel.authenticate()
         setUpUI()
-        setUpObservers()
 
     }
 
@@ -48,9 +46,6 @@ class MainActivity : AppCompatActivity() {
         mainActivityBinding
             .viewPager
             .addOnPageChangeListener(onPageChange())
-
-    }
-    private fun setUpObservers(){
 
     }
     /**

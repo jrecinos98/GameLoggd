@@ -13,7 +13,7 @@ import com.challenge.kippo.ui.main.GameCardAdapter
 import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
-import com.challenge.kippo.util.Status
+import com.challenge.kippo.util.Result
 
 /**
  * Fragment to display trending/popular games based on IGDB fields
@@ -56,17 +56,17 @@ class TrendingFragment() :Fragment()  {
         mainViewModel.getTrendingGames().observe(viewLifecycleOwner, Observer {
             it?.let { resource ->
                 when (resource.status) {
-                    Status.SUCCESS -> {
+                    Result.Status.SUCCESS -> {
 
                         trendingBinding.trendingProgressbar.visibility = View.GONE
                         resource.data?.let { list ->
                             gameCardAdapter.setGames(list)
                         }
                     }
-                    Status.LOADING -> {
+                    Result.Status.LOADING -> {
                         trendingBinding.trendingProgressbar.visibility = View.VISIBLE
                     }
-                    Status.ERROR ->{
+                    Result.Status.ERROR ->{
                         trendingBinding.trendingProgressbar.visibility = View.GONE
                     }
                 }

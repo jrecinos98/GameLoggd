@@ -9,17 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.challenge.kippo.R
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.databinding.FragmentSearchBinding
 import com.challenge.kippo.ui.main.GameCardAdapter
-import com.challenge.kippo.util.Status
+import com.challenge.kippo.util.Result
 
 class SearchFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
@@ -40,39 +38,35 @@ class SearchFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View {
         searchBinding = FragmentSearchBinding.inflate(inflater, container, false)
-        searchBinding.searchResultFragment
+        //Sets listener to the keyboard editor action
         searchBinding.textField.setOnEditorActionListener(onEditorActionListener())
+        //Sets the keyboard editor action to the GO state (so we can search)
         searchBinding.textField.imeOptions = EditorInfo.IME_ACTION_GO
         searchBinding.searchCancel.setOnClickListener(onCancelSearch())
-        updateFragment(SearchResultFragment(gameCardAdapter),"success")
+        updateFragment("success")
         observeSearchResults()
         return searchBinding.root
     }
 
-    //Updates the current fragment shown on the Activity. The current fragment is added to the back of the stack.
-    private fun updateFragment(frag: Fragment, tag: String) {
-        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-        // Replace the contents of the container with the new fragment, add to stack and commit the transaction
-        ft.replace(searchBinding.searchResultFragment.id, frag).addToBackStack(tag).commit()
-    }
+    /**
+     * @return listener for the cancel icon on the toolbar.
+     */
     private fun onCancelSearch() : View.OnClickListener{
-        return object : View.OnClickListener{
-            override fun onClick(v: View?) {
-                //Reset text field
-                searchBinding.textField.setText("")
-            }
-
+        return View.OnClickListener {
+            //Reset text field to empty string
+            searchBinding.textField.setText("")
         }
     }
 
+    /**
+     * Listens to the Keyboard Action presses
+     */
     private fun onEditorActionListener() : TextView.OnEditorActionListener{
         return object : TextView.OnEditorActionListener{
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 when(actionId){
                     EditorInfo.IME_ACTION_GO -> {
                         mainViewModel.searchGame(v?.text.toString())
-                        val inputManager: InputMethodManager = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        inputManager.hideSoftInputFromWindow(activity!!.currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
                         return true
                     }
                 }
@@ -81,6 +75,26 @@ class SearchFragment : Fragment() {
 
         }
 
+    }
+
+    /**
+     * Updates the current fragment shown on the child fragment
+     * The current fragment is added to the back of the stack.
+     * @param tag The tag of the fragment that will be loaded
+     */
+    private fun updateFragment(tag: String) {
+        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
+        val newFrag : Fragment = childFragmentManager.findFragmentByTag(tag)
+            ?: if(tag == SUCCESS_FRAG_TAG){
+                Log.d("SEARCH_FRAG", "Created new")
+                SearchResultFragment(gameCardAdapter)
+            } else{
+
+                Log.d("SEARCH_FRAG", "Created new")
+                SearchResultFragment()
+            }
+        // Replace the contents of the container with the new fragment, add to stack and commit the transaction
+        ft.replace(searchBinding.searchResultFragment.id, newFrag,tag).addToBackStack(null).commit()
     }
 
     /**
@@ -93,21 +107,24 @@ class SearchFragment : Fragment() {
             it?.let { resource ->
                 Log.d("SEARCH_RESULT", resource.status.toString())
                 when (resource.status) {
-                    Status.SUCCESS -> {
+                    Result.Status.SUCCESS -> {
                         searchBinding.searchProgressbar.visibility = View.GONE
                         resource.data?.let { list ->
                             if(list.isEmpty())
-                                updateFragment(SearchResultFragment(), "fail")
+                                updateFragment( FAILED_FRAG_TAG)
                             else{
-                                updateFragment(SearchResultFragment(gameCardAdapter),"success")
+                                val inputManager: InputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                inputManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+
+                                updateFragment(SUCCESS_FRAG_TAG)
                                 gameCardAdapter.setGames(list)
                             }
                         }
                     }
-                    Status.LOADING -> {
+                    Result.Status.LOADING -> {
                         searchBinding.searchProgressbar.visibility = View.VISIBLE
                     }
-                    Status.ERROR -> {
+                    Result.Status.ERROR -> {
                         searchBinding.searchProgressbar.visibility = View.GONE
                         Log.d("SEARCH_RESULT", resource.message.toString())
                     }
@@ -119,22 +136,17 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
-
+        const val SUCCESS_FRAG_TAG = "success"
+        const val FAILED_FRAG_TAG = "fail"
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
         @JvmStatic
-        fun newInstance(sectionNumber: Int): TrendingFragment {
+        fun newInstance(sectionNumber: Int): SearchFragment {
 
-            return TrendingFragment().apply {
+            return SearchFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
                 }
             }
         }

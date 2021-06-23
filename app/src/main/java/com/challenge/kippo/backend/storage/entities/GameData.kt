@@ -39,6 +39,5 @@ data class GameData(
 
     //Necessary for Room to auto-build and store objects into db
     fun getActualRating() = actualRating
-    fun setActualRating(value : Double){actualRating = value}
 
 }

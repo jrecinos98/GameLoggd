@@ -15,8 +15,6 @@ import com.challenge.kippo.R
 import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.databinding.CustomGameCardBinding
 import com.challenge.kippo.fragments.SearchFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.mchat.recinos.Activities.Home.Adapters.HomePagerAdapter
 
 
 /**

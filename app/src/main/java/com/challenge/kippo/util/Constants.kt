@@ -1,8 +1,8 @@
 package com.challenge.kippo.util
 
 object Constants{
-    //06/01/2020 at 00:00
-    const val LAST_YEAR_UNIX_TIME = 1590994800
+
+    const val LAST_YEAR_UNIX_TIME = 1590994800  //06/01/2020 at 00:00
     const val GRID_COL_COUNT = 2
     const val GRID_ITEM_SPACING = 15
     object API{

@@ -5,16 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.databinding.FragmentFavoriteBinding
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.ui.main.GameCardAdapter
 import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
-import com.challenge.kippo.util.Status
 
 /**
  * Fragment to display favorite games stored on local Room Database in a RecyclerView
