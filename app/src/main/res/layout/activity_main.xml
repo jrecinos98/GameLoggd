@@ -14,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="top"
-        android:layout_marginBottom="56dp"
         app:layout_anchor="@id/bottomNavigationView"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -26,7 +25,7 @@
         android:layout_gravity="bottom"
         android:background="@color/colorPrimary"
         app:labelVisibilityMode="unlabeled"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:layout_behavior="com.challenge.kippo.ui.main.BottomNavigationBehavior"
         app:menu="@menu/bottom_nav_menu" />
 
 
