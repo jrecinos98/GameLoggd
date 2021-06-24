@@ -1,8 +1,5 @@
 package com.challenge.kippo.backend
 
-import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.api.responses.Auth
 import com.challenge.kippo.backend.api.responses.Cover
@@ -11,20 +8,16 @@ import com.challenge.kippo.backend.api.responses.Genre
 import com.challenge.kippo.backend.database.LocalDatabase
 import com.challenge.kippo.backend.database.daos.GameDao
 import com.challenge.kippo.backend.database.entities.GameData
-import com.challenge.kippo.util.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
-import java.lang.Exception
 
 
 class Repository (private val database: LocalDatabase, private val clientManager: ClientManager)  {
 
     private val gameDao: GameDao = database.gameDao()
-    //TODO May be a good idea to move these to the clientManager
-    private var searchResults = MutableLiveData<Result<List<GameData>>>()
-    private var trendingResults = MutableLiveData<Result<List<GameData>>>()
+
 
     /**
      * Authenticates the app to the IGDB API.
@@ -46,61 +39,28 @@ class Repository (private val database: LocalDatabase, private val clientManager
 
     /**
      * Retrieves the trending Games from IGDB
-     * @return LiveData object to be observed by Activity/Fragment to be notified of changes
+     * @return List of Games that are trending/popular
      */
     //TODO consider if it is best to wrap with livedata on the view model instead?
     //This way the repository has no knowledge of the bridge to the UI and is interchangeable
-    fun getTrendingGames() {
-        GlobalScope.launch(Dispatchers.IO) {
-            trendingResults.postValue(Result.loading(data = null))
-            try{
-                //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
-                val response = clientManager.fetchTrendingGames().execute()
-                if(response.isSuccessful && response.body() != null){
-                    val gameList = generateGames(response.body())
-                    trendingResults.postValue(Result.success(data = gameList))
-                }
-            }catch(e : Exception){
-                trendingResults.postValue(Result.error(data = null, message = e.message ?: "Error occurred"))
-            }
-        }
-    }
+    fun getTrendingGames() : List<GameData> {
+        //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
+        val response = clientManager.fetchTrendingGames().execute()
+        return generateGames(response.body())
 
-    /**
-     * @return a LiveData object to be observed and notified when data for trendingGames changes.
-     */
-    fun getTrendingObservable() : LiveData<Result<List<GameData>>>{
-        return trendingResults
-    }
-
-    /**
-     * @return a LiveData object to be observed and notified when data for a search is received.
-     */
-    fun getSearchObservable() : LiveData<Result<List<GameData>>>{
-        return searchResults
     }
 
     /**
      * Searches IGDB for games that are matched to the provided name string
-     * @param name THe name of the game we are searching for
+     * @param name The name of the game we are searching for
+     * @return List of games that met the search criteria
      */
-    fun searchGame(name : String){
-        GlobalScope.launch(Dispatchers.IO) {
-            //Call post value as the value will be updated from a different thread
-            searchResults.postValue(Result.loading(data = null))
-            try {
-                //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
-                val response = clientManager.searchGame(name).execute()
-                if(response.isSuccessful) {
-                    //If response succeeded but body is empty then no matches were found
-                    val gameList = generateGames(response.body())
-                    //The gameList will be empty if response.body() was null
-                    searchResults.postValue(Result.success(data = gameList))
-                }
-            } catch (e: Exception) {
-                searchResults.postValue(Result.error(data = null, message = e.message ?: "Error occurred"))
-            }
-        }
+    fun searchGame(name : String) : List<GameData>{
+        //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
+        val response = clientManager.searchGame(name).execute()
+        //If response succeeded but body is empty then no matches were found
+        //The gameList will be empty if response.body() was null
+        return generateGames(response.body())
     }
 
     /**

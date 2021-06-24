@@ -7,11 +7,14 @@ import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.api.responses.Auth
 import com.challenge.kippo.backend.database.LocalDatabase
 import com.challenge.kippo.backend.database.entities.GameData
+import com.challenge.kippo.util.Result
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 
 //FIXME ViewModel must have default constructor which does not build the repository
 //For the time being the solution is to initialize it in an init block.
@@ -19,6 +22,10 @@ import retrofit2.Response
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private lateinit var repository: Repository
+    //TODO May be a good idea to move these to the clientManager
+    private var searchResults = MutableLiveData<Result<List<GameData>>>()
+    private var trendingResults = MutableLiveData<Result<List<GameData>>>()
+
     constructor(application: Application, repository: Repository) :this(application){
         this.repository = repository
     }
@@ -30,7 +37,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * Authenticate with the server and store the new Token
      */
-    //TODO consider if necessary as the interceptor automatically authenticates
     fun authenticate(){
         GlobalScope.launch {
             val response = repository.authenticate()
@@ -54,23 +60,47 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Get Games employs Kotlin coroutines functionality to notify of success or failure and deliver data
-     * @return Livedata object to be observed by UI
      */
-    fun getTrendingGames() = repository.getTrendingGames()
+    fun getTrendingGames() {
+        GlobalScope.launch(Dispatchers.IO) {
+            trendingResults.postValue(Result.loading(data = null))
+            try{
+                trendingResults.postValue(Result.success(data = repository.getTrendingGames()))
+
+            }catch(e : Exception){
+                trendingResults.postValue(Result.error(data = null, message = e.message ?: "Error occurred"))
+            }
+        }
+    }
 
     /**
      * Searches for games that match the  provided name string
      * @param name String to use to match to a name
      */
-    fun searchGame(name : String) =  repository.searchGame(name)
+    fun searchGame(name : String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            //Call post value as the value will be updated from a different thread
+            searchResults.postValue(Result.loading(data = null))
+            try {
+                //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
+                searchResults.postValue(Result.success(data =  repository.searchGame(name)))
+
+            } catch (e: Exception) {
+                searchResults.postValue(Result.error(data = null, message = e.message ?: "Error occurred"))
+            }
+        }
+    }
 
     /**
      * Return a livedata object that will be updated every time a searchGame request is made
      * @return Livedata to observe to make UI changes after searching
      */
-    fun getSearchObservable() = repository.getSearchObservable()
-
-    fun getTrendingObservable() = repository.getTrendingObservable()
+    fun getSearchObservable() = searchResults
+    /**
+     * Return a livedata object that will be updated every time a trendingGame request is made
+     * @return Livedata to observe to make UI changes
+     */
+    fun getTrendingObservable() = trendingResults
     /**
      * Returns a list of games that have been marked as favorite and reside in the local database
      * The list sorted by Rating in DESC order
