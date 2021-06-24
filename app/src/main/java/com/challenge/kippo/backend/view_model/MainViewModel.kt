@@ -82,8 +82,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             //Call post value as the value will be updated from a different thread
             searchResults.postValue(Result.loading(data = null))
             try {
+                val gameList = repository.searchGame(name)
                 //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
-                searchResults.postValue(Result.success(data =  repository.searchGame(name)))
+                searchResults.postValue(Result.success(data = gameList))
 
             } catch (e: Exception) {
                 searchResults.postValue(Result.error(data = null, message = e.message ?: "Error occurred"))
@@ -136,7 +137,38 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     private fun deleteGame(game : GameData){
         repository.delete(game)
+        GlobalScope.launch(Dispatchers.IO){
+            //Check the list of trending games and search results to update UI reflecting unfavorite change
+            unFavoriteTrendingGame(game.id)
+            //Check the list of trending games and search results to update UI reflecting unfavorite change
+            unFavoriteSearchedGame(game.id)
+        }
     }
+
+    private fun unFavoriteTrendingGame(id : Int){
+        val trendingGameList = trendingResults.value?.data
+        if(trendingGameList != null) {
+            for (trendingGame in trendingGameList){
+                if (trendingGame.id == id){
+                    trendingGame.favorited = false
+                    trendingResults.postValue(Result.success(data = trendingGameList))
+                }
+            }
+        }
+    }
+
+    private fun unFavoriteSearchedGame(id : Int){
+        val searchGameList = searchResults.value?.data
+        if(searchGameList != null) {
+            for (searchGame in searchGameList){
+                if (searchGame.id == id){
+                    searchGame.favorited = false
+                    searchResults.postValue(Result.success(data = searchGameList))
+                }
+            }
+        }
+    }
+
 
 
 

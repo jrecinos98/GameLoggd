@@ -52,14 +52,11 @@ class GameCardAdapter(private val context: Fragment) : RecyclerView.Adapter<Game
                 cardTitle.setText(game.title)
                 cardGenre.setText(game.genre)
                 cardRating.setText("${game.rating}%")
-                //The search result GameCards do not include an option to favorite games
-                if(context::class.java != SearchFragment::class.java) {
-                    favoriteImage.visibility = View.VISIBLE
-                    //Set the listener for the favorite image
-                    favoriteImage.setOnClickListener(onFavoriteClick(pos))
-                    //If Game has been favorited update favoriteImage
-                    favoriteImage.isActivated = game.favorited
-                }
+                favoriteImage.visibility = View.VISIBLE
+                //Set the listener for the favorite image
+                favoriteImage.setOnClickListener(onFavoriteClick(pos))
+                //If Game has been favorited update favoriteImage
+                favoriteImage.isActivated = game.favorited
             }
             this.pos = pos
         }

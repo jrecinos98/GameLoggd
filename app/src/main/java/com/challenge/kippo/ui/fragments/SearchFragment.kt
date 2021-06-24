@@ -36,6 +36,7 @@ class SearchFragment : Fragment() {
             //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
         }
         gameCardAdapter = GameCardAdapter(this)
+        gameCardAdapter.setOnFavoriteClick(mainViewModel::handleFavorite)
         //retainInstance = true
     }
 
@@ -98,6 +99,7 @@ class SearchFragment : Fragment() {
             } else{
                 SearchResultFragment()
             }
+        Log.d("SEARCH_FRAG", newFrag.javaClass.toString())
         // Replace the contents of the container with the new fragment, add to stack and commit the transaction
         ft.replace(searchBinding.searchResultFragment.id, newFrag, tag).addToBackStack(null).commit()
     }
@@ -114,6 +116,7 @@ class SearchFragment : Fragment() {
                     Result.Status.SUCCESS -> {
                         searchBinding.searchProgressbar.visibility = View.GONE
                         resource.data?.let { list ->
+                            Log.d("SEARCH_FRAG", list.toString())
                             if (list.isEmpty())
                                 updateFragment(FAILED_FRAG_TAG)
                             else {
@@ -125,7 +128,6 @@ class SearchFragment : Fragment() {
                                     requireActivity().currentFocus?.windowToken,
                                     InputMethodManager.HIDE_NOT_ALWAYS
                                 )
-
                                 updateFragment(SUCCESS_FRAG_TAG)
                                 gameCardAdapter.setGames(list)
                             }
