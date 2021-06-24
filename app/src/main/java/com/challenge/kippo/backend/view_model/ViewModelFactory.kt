@@ -1,21 +1,21 @@
 package com.challenge.kippo.backend.view_model
 
+import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.challenge.kippo.backend.Repository
 import com.challenge.kippo.backend.api.ClientManager
 
 
-class ViewModelFactory(private val context: Context, private val clientManager: ClientManager) : ViewModelProvider.Factory {
+class ViewModelFactory(private val application: Application) :  ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-
+        Log.d("CREATING_FRAG", "creating frag")
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(Repository(context, clientManager)) as T
-        }
-        else{
-
+            val repository = Repository(application,ClientManager(application))
+            return MainViewModel(application,repository ) as T
         }
         throw IllegalArgumentException("Unknown class name")
     }

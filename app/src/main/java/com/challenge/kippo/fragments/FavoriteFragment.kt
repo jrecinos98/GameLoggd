@@ -12,23 +12,25 @@ import com.challenge.kippo.ui.main.GameCardAdapter
 import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Fragment to display favorite games stored on local Room Database in a RecyclerView
  */
+//@AndroidEntryPoint
 class FavoriteFragment : Fragment(){
+
     private lateinit var mainViewModel: MainViewModel
     private lateinit var favoriteBinding: FragmentFavoriteBinding
     private lateinit var gameCardAdapter: GameCardAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java).apply {
-            //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-        }
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         gameCardAdapter = GameCardAdapter(this)
         gameCardAdapter.setOnFavoriteClick(mainViewModel::handleFavorite)
-        retainInstance = true
+       // retainInstance = true
     }
 
     override fun onCreateView(

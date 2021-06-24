@@ -19,6 +19,7 @@ import com.challenge.kippo.ui.main.GameCardAdapter
 import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Child Fragment of Search Fragment
@@ -27,13 +28,14 @@ import com.challenge.kippo.util.Constants
  * If a gameCardAdapter is provided it will return The fragment with RecyclerView
  * @param gameCardAdapter Adapter to be used for the Recyclerview if successful
  */
+//@AndroidEntryPoint
 class SearchResultFragment(private val gameCardAdapter: GameCardAdapter? = null) : Fragment() {
     private lateinit var searchBinding: FragmentSearchSuccessBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        gameCardAdapter = GameCardAdapter(this)
-        retainInstance = true
+        //retainInstance = true
     }
 
     override fun onCreateView(

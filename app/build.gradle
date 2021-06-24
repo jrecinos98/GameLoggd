@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id "dagger.hilt.android.plugin"
 }
 //API secret and ID (Not entirely secure as can be extracted by decompiling)
 def apiKeyPropertiesFile = rootProject.file("apikey.properties")
@@ -68,6 +69,10 @@ dependencies {
 
     //Dependencies
     implementation "com.google.android.material:material:1.2.0"
+
+    //Hilt dependencies
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
 
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

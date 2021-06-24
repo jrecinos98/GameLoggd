@@ -16,6 +16,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.viewpager.widget.ViewPager
+import com.challenge.kippo.backend.Repository
 import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.backend.view_model.ViewModelFactory
@@ -24,11 +25,9 @@ import com.challenge.kippo.ui.main.HomePagerAdapter
 import com.challenge.kippo.util.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
-
-
-
-
+//@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityBinding: ActivityMainBinding
     private lateinit var homePagerAdapter: HomePagerAdapter
@@ -40,9 +39,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(mainActivityBinding.root);
-        val apiHelper = ClientManager(this)
         //Creates a MainViewModel through its designated Factory
-        viewModel = ViewModelProvider(this, ViewModelFactory(this, apiHelper)).get()
+        viewModel = ViewModelProvider(this,
+            ViewModelFactory(application)
+        ).get()
         setUpUI()
         //Register broadcast receiver to be notified of network change events
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
@@ -56,6 +56,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        if(!isNetworkAvailable(this)){
+            showSnackBar(Constants.ERROR_MESSAGE.NO_NETWORK, "Ok")
+        }
 
     }
 

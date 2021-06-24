@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.challenge.kippo.R
 import com.challenge.kippo.backend.storage.entities.GameData
 import com.challenge.kippo.databinding.CustomGameCardBinding
@@ -23,6 +24,7 @@ import com.challenge.kippo.fragments.SearchFragment
 class GameCardAdapter(private val context: Fragment) : RecyclerView.Adapter<GameCardAdapter.GameCardHolder>(){
     private var gameList = ArrayList<GameData>()
     private lateinit var listener : (game : GameData)-> Unit
+
     /**
      * Wrapper class for each recycler view item.
      */
@@ -41,14 +43,16 @@ class GameCardAdapter(private val context: Fragment) : RecyclerView.Adapter<Game
         fun bindCards(pos: Int){
             if(gameList.size > pos ) {
                 val game = gameList[pos]
-
+                //Load image
                 Glide.with(context)
                         .asDrawable()
                         .load(game.coverUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(gameCover)
+
                 cardTitle.setText(game.title)
                 cardGenre.setText(game.genre)
-                cardRating.setText("${game.rating.toInt()}%")
+                cardRating.setText("${game.rating}%")
                 //The search result GameCards do not include an option to favorite games
                 if(context::class.java != SearchFragment::class.java) {
                     favoriteImage.visibility = View.VISIBLE
@@ -135,11 +139,5 @@ class GameCardAdapter(private val context: Fragment) : RecyclerView.Adapter<Game
      */
     fun setOnFavoriteClick(onFavorite : (game : GameData)-> Unit){
         listener = onFavorite
-    }
-
-    companion object{
-        public const val GRID_COL_COUNT = 2
-
-
     }
 }

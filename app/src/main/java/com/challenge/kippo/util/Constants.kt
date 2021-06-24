@@ -32,6 +32,6 @@ object Constants{
         const val USER_TOKEN = "user_token"
     }
     object ERROR_MESSAGE{
-        const val NO_NETWORK = "No network connectivity. Try again later"
+        const val NO_NETWORK = "No network connectivity."
     }
 }

@@ -1,8 +1,10 @@
 package com.challenge.kippo.backend.view_model
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.challenge.kippo.backend.Repository
+import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.api.responses.Auth
 import com.challenge.kippo.backend.storage.entities.GameData
 import kotlinx.coroutines.GlobalScope
@@ -11,9 +13,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+//FIXME ViewModel must have default constructor which does not build the repository
+//For the time being the solution is to initialize it in an init block.
+//Ideally saveState would be used to preserve the data (Need more research)
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-class MainViewModel(private val repository: Repository) : ViewModel() {
-
+    private lateinit var repository: Repository
+    constructor(application: Application, repository: Repository) :this(application){
+        this.repository = repository
+    }
+    init{
+        if (!::repository.isInitialized){
+            repository = Repository(application, ClientManager(application))
+        }
+    }
     /**
      * Authenticate with the server and store the new Token
      */
@@ -94,5 +107,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     private fun deleteGame(game : GameData){
         repository.delete(game)
     }
+
+
 
 }

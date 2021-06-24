@@ -18,7 +18,10 @@ import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.databinding.FragmentSearchBinding
 import com.challenge.kippo.ui.main.GameCardAdapter
 import com.challenge.kippo.util.Result
+import dagger.hilt.android.AndroidEntryPoint
 
+
+//@AndroidEntryPoint
 class SearchFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var searchBinding: FragmentSearchBinding
@@ -30,7 +33,7 @@ class SearchFragment : Fragment() {
             //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
         }
         gameCardAdapter = GameCardAdapter(this)
-        retainInstance = true
+        //retainInstance = true
     }
 
     override fun onCreateView(

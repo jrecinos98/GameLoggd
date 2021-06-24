@@ -21,18 +21,13 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import java.lang.Exception
 
-class Repository (private val context: Context, private val clientManager: ClientManager) {
+
+class Repository (private val context: Context, private val clientManager: ClientManager)  {
 
     private val gameDao: GameDao = LocalDatabase.invoke(context).gameDao()
     //TODO May be a good idea to move these to the clientManager
     private var searchResults = MutableLiveData<Result<List<GameData>>>()
     private var trendingResults = MutableLiveData<Result<List<GameData>>>()
-    init {
-        //Fetch favorite game LiveData
-        GlobalScope.launch {
-            //favorites = gameDao.findFavoritesDescOrder()
-        }
-    }
 
     /**
      * Authenticates the app to the IGDB API.

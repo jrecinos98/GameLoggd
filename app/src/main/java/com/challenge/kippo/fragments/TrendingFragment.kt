@@ -14,11 +14,13 @@ import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
 import com.challenge.kippo.util.Result
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Fragment to display trending/popular games based on IGDB fields
  * Game data is fetched with Retrofit (and OkHttp) and displayed in RecyclerView
  */
+//@AndroidEntryPoint
 class TrendingFragment() :Fragment()  {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var trendingBinding: FragmentTrendingBinding
@@ -29,7 +31,7 @@ class TrendingFragment() :Fragment()  {
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         gameCardAdapter = GameCardAdapter(this)
         gameCardAdapter.setOnFavoriteClick(mainViewModel::handleFavorite)
-        retainInstance = true
+        //retainInstance = true
     }
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
