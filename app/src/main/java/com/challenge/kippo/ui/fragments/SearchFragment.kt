@@ -1,5 +1,6 @@
 package com.challenge.kippo.ui.fragments
 
+import android.R.drawable
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +11,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.challenge.kippo.R
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.databinding.FragmentSearchBinding
 import com.challenge.kippo.ui.main.adapters.GameCardAdapter
@@ -36,14 +40,16 @@ class SearchFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         searchBinding = FragmentSearchBinding.inflate(inflater, container, false)
         //Sets listener to the keyboard editor action
-        searchBinding.textField.setOnEditorActionListener(onEditorActionListener())
-        //Sets the keyboard editor action to the GO state (so we can search)
-        searchBinding.textField.imeOptions = EditorInfo.IME_ACTION_GO
+        searchBinding.textField.apply{
+            setOnEditorActionListener(onEditorActionListener())
+            //Sets the keyboard editor action to the GO state (so we can search)
+            searchBinding.textField.imeOptions = EditorInfo.IME_ACTION_GO
+        }
         searchBinding.searchCancel.setOnClickListener(onCancelSearch())
         updateFragment("success")
         observeSearchResults()
@@ -93,7 +99,7 @@ class SearchFragment : Fragment() {
                 SearchResultFragment()
             }
         // Replace the contents of the container with the new fragment, add to stack and commit the transaction
-        ft.replace(searchBinding.searchResultFragment.id, newFrag,tag).addToBackStack(null).commit()
+        ft.replace(searchBinding.searchResultFragment.id, newFrag, tag).addToBackStack(null).commit()
     }
 
     /**
@@ -108,11 +114,17 @@ class SearchFragment : Fragment() {
                     Result.Status.SUCCESS -> {
                         searchBinding.searchProgressbar.visibility = View.GONE
                         resource.data?.let { list ->
-                            if(list.isEmpty())
-                                updateFragment( FAILED_FRAG_TAG)
-                            else{
-                                val inputManager: InputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                inputManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                            if (list.isEmpty())
+                                updateFragment(FAILED_FRAG_TAG)
+                            else {
+                                val inputManager: InputMethodManager =
+                                    requireContext().getSystemService(
+                                        Context.INPUT_METHOD_SERVICE
+                                    ) as InputMethodManager
+                                inputManager.hideSoftInputFromWindow(
+                                    requireActivity().currentFocus?.windowToken,
+                                    InputMethodManager.HIDE_NOT_ALWAYS
+                                )
 
                                 updateFragment(SUCCESS_FRAG_TAG)
                                 gameCardAdapter.setGames(list)

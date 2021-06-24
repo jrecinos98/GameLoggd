@@ -28,9 +28,9 @@
             android:background="@null"
             style="@style/Toolbar.EditText"
             android:layout_marginTop="10dp"
-            android:drawableStart="@drawable/ic_search"
+            app:drawableLeftCompat="@drawable/ic_search"
             android:drawableTint="@color/colorAccent"
-        />
+            />
         <ImageView
             android:id="@+id/search_cancel"
             android:layout_width="20dp"
@@ -40,7 +40,6 @@
             android:background="@drawable/ic_search_cancel"
             style="@style/Toolbar.Cancel"
             />
-
     </LinearLayout>
 
 
