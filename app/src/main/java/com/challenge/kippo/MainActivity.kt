@@ -1,21 +1,40 @@
 package com.challenge.kippo
 
+import android.content.Context
+import android.content.DialogInterface
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
-import androidx.viewpager.widget.ViewPager
+import android.os.Message
+import android.view.Gravity
+import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import androidx.viewpager.widget.ViewPager
 import com.challenge.kippo.backend.api.ClientManager
-import com.challenge.kippo.databinding.ActivityMainBinding
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.backend.view_model.ViewModelFactory
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.challenge.kippo.databinding.ActivityMainBinding
 import com.challenge.kippo.ui.main.HomePagerAdapter
+import com.challenge.kippo.util.Constants
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+
+
+
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityBinding: ActivityMainBinding
     private lateinit var homePagerAdapter: HomePagerAdapter
     private lateinit var viewModel : MainViewModel
+    private lateinit var snackbar: Snackbar
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +43,24 @@ class MainActivity : AppCompatActivity() {
         val apiHelper = ClientManager(this)
         //Creates a MainViewModel through its designated Factory
         viewModel = ViewModelProvider(this, ViewModelFactory(this, apiHelper)).get()
-        //TODO consider removing as the Interceptor can handle authentication when needed.
-        //viewModel.authenticate()
         setUpUI()
+        //Register broadcast receiver to be notified of network change events
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
+            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.let {
+                it.registerDefaultNetworkCallback(networkCallback())
+            }
+        }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     /**
@@ -42,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         mainActivityBinding.viewPager.offscreenPageLimit = 2
         mainActivityBinding
             .bottomNavigationView
-            .setOnNavigationItemSelectedListener (onNavigationItemSelected())
+            .setOnNavigationItemSelectedListener(onNavigationItemSelected())
         mainActivityBinding
             .viewPager
             .addOnPageChangeListener(onPageChange())
@@ -59,15 +92,24 @@ class MainActivity : AppCompatActivity() {
              //Kotlin is smart enough to not need a return value
              when (item.itemId) {
                  R.id.trending -> {
-                     mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.TRENDING_FRAG_INDEX, true)
-                    true
+                     mainActivityBinding.viewPager.setCurrentItem(
+                         HomePagerAdapter.TRENDING_FRAG_INDEX,
+                         true
+                     )
+                     true
                  }
                  R.id.search -> {
-                     mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.SEARCH_FRAG_INDEX, true)
+                     mainActivityBinding.viewPager.setCurrentItem(
+                         HomePagerAdapter.SEARCH_FRAG_INDEX,
+                         true
+                     )
                      true
                  }
                  R.id.favorite -> {
-                     mainActivityBinding.viewPager.setCurrentItem(HomePagerAdapter.FAVORITE_FRAG_INDEX, true)
+                     mainActivityBinding.viewPager.setCurrentItem(
+                         HomePagerAdapter.FAVORITE_FRAG_INDEX,
+                         true
+                     )
                      true
                  }
                  else -> false
@@ -92,28 +134,107 @@ class MainActivity : AppCompatActivity() {
                 when(position){
                     HomePagerAdapter.TRENDING_FRAG_INDEX -> {
                         mainActivityBinding
-                                .bottomNavigationView
-                                .menu
-                                .findItem(R.id.trending).isChecked = true;
+                            .bottomNavigationView
+                            .menu
+                            .findItem(R.id.trending).isChecked = true;
                     }
                     HomePagerAdapter.SEARCH_FRAG_INDEX -> {
                         mainActivityBinding
-                                .bottomNavigationView
-                                .menu
-                                .findItem(R.id.search).isChecked = true;
+                            .bottomNavigationView
+                            .menu
+                            .findItem(R.id.search).isChecked = true;
                     }
                     HomePagerAdapter.FAVORITE_FRAG_INDEX -> {
                         mainActivityBinding
-                                .bottomNavigationView
-                                .menu
-                                .findItem(R.id.favorite).isChecked = true;
+                            .bottomNavigationView
+                            .menu
+                            .findItem(R.id.favorite).isChecked = true;
                     }
                 }
             }
             override fun onPageScrollStateChanged(state: Int) {
             }
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
             }
         }
     }
+
+    /**
+     * Displays a snackbar with a message
+     * @param message The message to be displayed
+     * @param actionMessage The message of the action text to the right of the message
+     */
+    private fun showSnackBar(message: String, actionMessage : String){
+        if(!::snackbar.isInitialized) {
+            snackbar = Snackbar.make(mainActivityBinding.activityFrame,
+                    message,
+                    Snackbar.LENGTH_INDEFINITE)
+            snackbar.apply {
+                setAction(actionMessage){
+
+                }
+                setTextColor(getColor(R.color.white))
+                setActionTextColor(getColor(R.color.teal))
+                //anchorView = mainActivityBinding.bottomNavigationView
+                view.layoutParams = (view.layoutParams as CoordinatorLayout.LayoutParams)
+                        .apply {
+                            anchorGravity = Gravity.TOP
+                            gravity = Gravity.TOP
+                            anchorId = mainActivityBinding.bottomNavigationView.id
+                        }
+            }
+        }
+        snackbar.show()
+    }
+
+    /**
+     * Returns a callback method to be passed to the connection manager to be notified
+     * of network changes.
+     * @return callback to register.
+     */
+    private fun networkCallback() : ConnectivityManager.NetworkCallback {
+        return object : ConnectivityManager.NetworkCallback() {
+            //When connection regained, fetch trending games for changes since last check
+            //If snackbar is visible then dismiss it.
+            override fun onAvailable(network: Network) {
+                viewModel.getTrendingGames()
+                if (::snackbar.isInitialized && snackbar.isShown) {
+                    snackbar.dismiss()
+                }
+
+            }
+            //Display snackbar with error message
+            override fun onLost(network: Network) {
+                showSnackBar(Constants.ERROR_MESSAGE.NO_NETWORK, "Ok")
+            }
+        }
+    }
+
+    /**
+     * Checks network status to determine connectivity.
+     */
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nw      = connectivityManager.activeNetwork ?: return false
+            val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+            return when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                //for other device how are able to connect with Ethernet
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                //for check internet over Bluetooth
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+                else -> false
+            }
+        } else {
+            val nwInfo = connectivityManager.activeNetworkInfo ?: return false
+            return nwInfo.isConnected
+        }
+    }
+
 }

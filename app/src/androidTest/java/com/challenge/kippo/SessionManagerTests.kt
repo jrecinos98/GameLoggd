@@ -7,7 +7,6 @@ import com.challenge.kippo.backend.api.SessionManager
 import org.junit.Before
 import org.junit.Test
 
-//TODO umm is this needed?
 class SessionManagerTests {
     lateinit var context: Context
     lateinit var sessionManager: SessionManager
@@ -17,18 +16,10 @@ class SessionManagerTests {
         sessionManager = SessionManager(context)
     }
     @Test
-    fun saveAuthTokenTest(){
+    fun fetchAndSaveAuthTokenTest(){
         val testToken = "invalid_token"
         sessionManager.saveAuthToken(testToken)
         //Verify it was saved to SharedPreferences
         assert(testToken == sessionManager.fetchAuthToken())
-    }
-    @Test
-    fun fetchAuthTokenTest(){
-        val testToken = "new_token"
-        sessionManager.saveAuthToken(testToken)
-        //Verify it was saved to SharedPreferences
-        assert(testToken == sessionManager.fetchAuthToken())
-
     }
 }

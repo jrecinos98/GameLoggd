@@ -18,7 +18,7 @@ class BottomNavigationBehavior<V : View>(context: Context, attrs: AttributeSet) 
     override fun onStartNestedScroll(
         coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, axes: Int, type: Int
     ): Boolean {
-        return axes == ViewCompat.SCROLL_AXIS_VERTICAL
+        return axes == ViewCompat.SCROLL_AXIS_VERTICAL || axes == ViewCompat.SCROLL_AXIS_HORIZONTAL
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -26,6 +26,7 @@ class BottomNavigationBehavior<V : View>(context: Context, attrs: AttributeSet) 
         coordinatorLayout: CoordinatorLayout, child: V, target: View, dx: Int, dy: Int, consumed: IntArray, type: Int
     ) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
+
         child.translationY = max(0.0,
             min(child.height.toFloat(), child.translationY + dy).toDouble()
         ).toFloat()

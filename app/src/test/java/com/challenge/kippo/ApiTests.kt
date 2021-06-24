@@ -75,7 +75,7 @@ class ApiTests {
         val game = response!!.body()!![0]
         //The == operator for Game class has been overridden so safe to compare them
         assert(testGame == game){"Game data does not match"}
-        println(game)
+//        println(game)
     }
 
     @Test
@@ -86,16 +86,17 @@ class ApiTests {
         //The == operator for Game class has been overridden so safe to compare them
         assert(testGame == game){"Game data does not match"}
     }
+
     @Test
+    //TODO figure out how to test as results may vary over time
     fun fetchTrendingQueryTest(){
         val response = getRequest()?.fetchGames(Game.buildTrendingRequestBody())?.execute()
         validateResponse(response)
-        println(response?.body())
-        //TODO figure out how to test as results may vary over time
+//        println(response?.body())
     }
     @Test
     fun fetchCoverQueryTest(){
-        val response =getRequest()?.fetchCovers(Cover.buildRequestBody(testGame.cover.id.toString()))?.execute()
+        val response =getRequest()?.fetchCovers(Cover.buildRequestBody(testGame.cover?.id.toString()))?.execute()
         validateResponse(response)
         val cover = response!!.body()!![0]
         //Default == behaviour is to compare all the fields and that's okay for Cover objects

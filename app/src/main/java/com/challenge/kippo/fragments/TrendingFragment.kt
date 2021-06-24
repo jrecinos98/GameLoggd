@@ -48,16 +48,20 @@ class TrendingFragment() :Fragment()  {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        mainViewModel.getTrendingGames()
+    }
+
     /**
      * Observes LiveData object returned by viewModel to be notified of updates and changes
      * to the list of trending games
      */
     private fun observeTrendingGames(){
-        mainViewModel.getTrendingGames().observe(viewLifecycleOwner, Observer {
+        mainViewModel.getTrendingObservable().observe(viewLifecycleOwner, Observer {
             it?.let { resource ->
                 when (resource.status) {
                     Result.Status.SUCCESS -> {
-
                         trendingBinding.trendingProgressbar.visibility = View.GONE
                         resource.data?.let { list ->
                             gameCardAdapter.setGames(list)

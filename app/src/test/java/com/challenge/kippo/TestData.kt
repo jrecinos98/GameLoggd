@@ -29,11 +29,9 @@ object TestData{
             testGenres,//listOf(5,31),
             testCover,//81672,
             93.3180099176859,
-            481,
             95.1818181818182,
             18,
             94.24991404975205,
-            499,
             559,
             "https://www.igdb.com/games/the-last-of-us-part-ii"
     )

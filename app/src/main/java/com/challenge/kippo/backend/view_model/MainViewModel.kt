@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.challenge.kippo.backend.Repository
 import com.challenge.kippo.backend.api.responses.Auth
-import com.challenge.kippo.backend.api.responses.Game
 import com.challenge.kippo.backend.storage.entities.GameData
-import com.challenge.kippo.util.Result
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -16,12 +13,6 @@ import retrofit2.Response
 
 
 class MainViewModel(private val repository: Repository) : ViewModel() {
-
-    private val _index = MutableLiveData<Int>()
-
-    val text: LiveData<String> = Transformations.map(_index) {
-        "Hello world from section: $it"
-    }
 
     /**
      * Authenticate with the server and store the new Token
@@ -66,6 +57,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
      */
     fun getSearchObservable() = repository.getSearchObservable()
 
+    fun getTrendingObservable() = repository.getTrendingObservable()
     /**
      * Returns a list of games that have been marked as favorite and reside in the local database
      * The list sorted by Rating in DESC order

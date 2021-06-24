@@ -86,11 +86,8 @@ class SearchFragment : Fragment() {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
         val newFrag : Fragment = childFragmentManager.findFragmentByTag(tag)
             ?: if(tag == SUCCESS_FRAG_TAG){
-                Log.d("SEARCH_FRAG", "Created new")
                 SearchResultFragment(gameCardAdapter)
             } else{
-
-                Log.d("SEARCH_FRAG", "Created new")
                 SearchResultFragment()
             }
         // Replace the contents of the container with the new fragment, add to stack and commit the transaction
@@ -105,7 +102,6 @@ class SearchFragment : Fragment() {
     private fun observeSearchResults(){
         mainViewModel.getSearchObservable().observe(viewLifecycleOwner, Observer {
             it?.let { resource ->
-                Log.d("SEARCH_RESULT", resource.status.toString())
                 when (resource.status) {
                     Result.Status.SUCCESS -> {
                         searchBinding.searchProgressbar.visibility = View.GONE
@@ -126,7 +122,7 @@ class SearchFragment : Fragment() {
                     }
                     Result.Status.ERROR -> {
                         searchBinding.searchProgressbar.visibility = View.GONE
-                        Log.d("SEARCH_RESULT", resource.message.toString())
+                        Log.d("ERROR_MESSAGE", resource.message.toString())
                     }
                 }
 

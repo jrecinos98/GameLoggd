@@ -37,7 +37,6 @@ class AuthInterceptor(private val clientID : String,
                     initialResponse.close()
                     //Request a new token and store it
                     val newToken =  refreshToken()
-                    println("newToken: $newToken")
                     //Rebuild the request with the refreshed token in the header
                     val newRequest= chain.request()
                             .newBuilder()

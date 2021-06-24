@@ -23,7 +23,7 @@ interface GameDao{
     fun isFavorite(id : Int) : Boolean
 
     @Insert
-    fun insertAll(vararg todo: GameData)
+    fun insertAll(vararg games: GameData)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(game : GameData)

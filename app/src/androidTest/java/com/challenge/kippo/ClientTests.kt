@@ -52,7 +52,6 @@ class ClientTests {
     }
     @Test
     fun authenticationTest(){
-        println("In auth test")
         val response = clientManager.authenticate().execute()
         validateResponse(response)
         assert(response.body()?.tokenType == "bearer")

@@ -30,7 +30,6 @@ object RetrofitBuilder {
     /**
      * Get IGDB endpoint request object
      */
-    //TODO test whether it is recreated every time after token invalidation
     fun getIgdbService(currentToken : String,
                        onAuthRefresh: (()-> String)?)
     : IgdbEndpoints {

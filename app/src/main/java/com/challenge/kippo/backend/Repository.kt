@@ -24,8 +24,9 @@ import java.lang.Exception
 class Repository (private val context: Context, private val clientManager: ClientManager) {
 
     private val gameDao: GameDao = LocalDatabase.invoke(context).gameDao()
-    //private lateinit var favorites : LiveData<List<GameData>>
+    //TODO May be a good idea to move these to the clientManager
     private var searchResults = MutableLiveData<Result<List<GameData>>>()
+    private var trendingResults = MutableLiveData<Result<List<GameData>>>()
     init {
         //Fetch favorite game LiveData
         GlobalScope.launch {
@@ -57,22 +58,40 @@ class Repository (private val context: Context, private val clientManager: Clien
      */
     //TODO consider if it is best to wrap with livedata on the view model instead?
     //This way the repository has no knowledge of the bridge to the UI and is interchangeable
-    fun getTrendingGames() = liveData(Dispatchers.IO) {
-        emit(Result.loading(data = null))
-        try{
-            //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
-            val response = clientManager.fetchTrendingGames().execute()
-            val gameList =  response.body()?.let { generateGames(it) }
-            if(response.isSuccessful){
-                emit(Result.success(data = gameList))
+    fun getTrendingGames() {
+        GlobalScope.launch(Dispatchers.IO) {
+            trendingResults.postValue(Result.loading(data = null))
+            try{
+                //Execute calls the function synchronously but since called within IO coroutine it isn't on main thread
+                val response = clientManager.fetchTrendingGames().execute()
+                if(response.isSuccessful && response.body() != null){
+                    val gameList = generateGames(response.body())
+                    trendingResults.postValue(Result.success(data = gameList))
+                }
+            }catch(e : Exception){
+                trendingResults.postValue(Result.error(data = null, message = e.message ?: "Error occurred"))
             }
-        }catch(e : Exception){
-            emit(Result.error(data = null, message = e.message ?: "Error occurred"))
         }
     }
+
+    /**
+     * @return a LiveData object to be observed and notified when data for trendingGames changes.
+     */
+    fun getTrendingObservable() : LiveData<Result<List<GameData>>>{
+        return trendingResults
+    }
+
+    /**
+     * @return a LiveData object to be observed and notified when data for a search is received.
+     */
     fun getSearchObservable() : LiveData<Result<List<GameData>>>{
         return searchResults
     }
+
+    /**
+     * Searches IGDB for games that are matched to the provided name string
+     * @param name THe name of the game we are searching for
+     */
     fun searchGame(name : String){
         GlobalScope.launch(Dispatchers.IO) {
             //Call post value as the value will be updated from a different thread
@@ -91,17 +110,6 @@ class Repository (private val context: Context, private val clientManager: Clien
             }
         }
     }
-    /*
-    liveData(Dispatchers.IO) {
-        emit(Result.loading(data = null))
-        try{
-        //NOTE: Valid when findFavoriteDescOrder returns List<GameData> (NO LIVE DATA)
-            emit(Result.success(data= gameDao.findFavoritesDescOrder()))
-        }catch (e:Exception){
-            emit(Result.error(data = null, message = e.message ?: "Error occurred"))
-        }
-    }
-     */
 
     /**
      * Inserts game into the game table in database
@@ -171,7 +179,6 @@ class Repository (private val context: Context, private val clientManager: Clien
      * @return returns a list of genres that match the provided ids
      */
     private fun fetchGenres(ids : String) : List<Genre>{
-        //println("Genres: $ids")
         val response = clientManager.fetchGenres(ids)?.execute()
         var genres = listOf<Genre>()
         if (response != null) {

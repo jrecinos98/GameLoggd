@@ -124,7 +124,6 @@ class GameCardAdapter(private val context: Fragment) : RecyclerView.Adapter<Game
      * @param gameData The updated list of GameData
      */
     fun setGames(gameData: List<GameData>){
-        Log.d("ADAPTER", "called")
         gameList = gameData as ArrayList<GameData>
         //Triggers a re-draw of the updated views.
         notifyDataSetChanged()

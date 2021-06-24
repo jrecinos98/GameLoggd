@@ -21,16 +21,12 @@ data class Game(
         val cover : Cover?,
         @SerializedName(value = "rating")
         val rating : Double,
-        @SerializedName(value = "rating_count")
-        val ratingCount : Int,
         @SerializedName(value = "aggregated_rating")
         val aRating: Double,
         @SerializedName(value = "aggregated_rating_count")
         val aRatingCount : Int,
         @SerializedName(value = "total_rating")
         val totalRating : Double,
-        @SerializedName(value = "total_rating_count")
-        val totalRatingCount : Int,
         @SerializedName(value = "follows")
         val follows : Int,
         @SerializedName(value = "url")
@@ -77,8 +73,8 @@ data class Game(
                 private const val FIELDS =
                         //Fields exclusive to a game object
                         "id, name, follows, url," +
-                        "rating, rating_count, aggregated_rating, aggregated_rating_count," +
-                        "total_rating, total_rating_count,"+
+                        "rating, aggregated_rating, aggregated_rating_count," +
+                        "total_rating,"+
                         //Requests the fields needed to build Genre object (using expander syntax)
                         //Read: https://api-docs.igdb.com/?kotlin#expander
                         "genres.id, genres.name,"+
