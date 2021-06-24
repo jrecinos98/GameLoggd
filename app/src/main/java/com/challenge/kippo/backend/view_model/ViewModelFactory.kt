@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.challenge.kippo.backend.Repository
 import com.challenge.kippo.backend.api.ClientManager
+import com.challenge.kippo.backend.database.LocalDatabase
 
 
 class ViewModelFactory(private val application: Application) :  ViewModelProvider.Factory {
@@ -14,7 +15,7 @@ class ViewModelFactory(private val application: Application) :  ViewModelProvide
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         Log.d("CREATING_FRAG", "creating frag")
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            val repository = Repository(application,ClientManager(application))
+            val repository = Repository(LocalDatabase.invoke(application),ClientManager(application))
             return MainViewModel(application,repository ) as T
         }
         throw IllegalArgumentException("Unknown class name")

@@ -1,8 +1,8 @@
-package com.challenge.kippo.backend.storage.daos
+package com.challenge.kippo.backend.database.daos
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.challenge.kippo.backend.storage.entities.GameData
+import com.challenge.kippo.backend.database.entities.GameData
 
 @Dao
 interface GameDao{
@@ -10,11 +10,17 @@ interface GameDao{
     open fun fetchFavoriteID(){
 
     }
-    @Query("SELECT * FROM games ORDER BY title DESC")
+    @Query("SELECT * FROM games WHERE id = :id")
+    fun findById(id : Int): List<GameData>
+
+    @Query("SELECT * FROM games ORDER BY rating DESC")
     fun getAllDescOrder(): List<GameData>
 
     @Query("SELECT * FROM games WHERE favorite = 1 ORDER BY rating DESC")
     fun findFavoritesDescOrder() : LiveData<List<GameData>>
+
+    @Query("SELECT * FROM games WHERE favorite = 1 ORDER BY rating DESC")
+    fun findFavoritesDescOrderList() : List<GameData>
 
     @Query("SELECT * FROM games WHERE title LIKE :title ")
     fun findByTitle(title: String): GameData

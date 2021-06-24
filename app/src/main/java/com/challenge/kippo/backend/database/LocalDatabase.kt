@@ -1,12 +1,12 @@
-package com.challenge.kippo.backend.storage
+package com.challenge.kippo.backend.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.challenge.kippo.backend.storage.daos.GameDao
-import com.challenge.kippo.backend.storage.entities.GameData
+import com.challenge.kippo.backend.database.daos.GameDao
+import com.challenge.kippo.backend.database.entities.GameData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

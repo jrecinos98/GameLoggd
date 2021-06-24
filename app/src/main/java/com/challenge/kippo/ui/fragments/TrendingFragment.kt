@@ -1,4 +1,4 @@
-package com.challenge.kippo.fragments
+package com.challenge.kippo.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,12 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.databinding.FragmentTrendingBinding
-import com.challenge.kippo.ui.main.GameCardAdapter
+import com.challenge.kippo.ui.main.adapters.GameCardAdapter
 import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
 import com.challenge.kippo.util.Result
-import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Fragment to display trending/popular games based on IGDB fields

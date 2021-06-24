@@ -1,25 +1,16 @@
-package com.challenge.kippo.fragments
+package com.challenge.kippo.ui.fragments
 
-import android.app.Activity
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
-import com.challenge.kippo.R
 import com.challenge.kippo.databinding.FragmentSearchFailedBinding
 import com.challenge.kippo.databinding.FragmentSearchSuccessBinding
-import com.challenge.kippo.ui.main.GameCardAdapter
+import com.challenge.kippo.ui.main.adapters.GameCardAdapter
 import com.challenge.kippo.ui.main.GridItemDecoration
 import com.challenge.kippo.ui.main.MGridLayoutManager
 import com.challenge.kippo.util.Constants
-import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Child Fragment of Search Fragment

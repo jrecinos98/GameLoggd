@@ -1,8 +1,7 @@
-package com.challenge.kippo.ui.main
+package com.challenge.kippo.ui.main.adapters
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.challenge.kippo.R
-import com.challenge.kippo.backend.storage.entities.GameData
+import com.challenge.kippo.backend.database.entities.GameData
 import com.challenge.kippo.databinding.CustomGameCardBinding
-import com.challenge.kippo.fragments.SearchFragment
+import com.challenge.kippo.ui.fragments.SearchFragment
 
 
 /**

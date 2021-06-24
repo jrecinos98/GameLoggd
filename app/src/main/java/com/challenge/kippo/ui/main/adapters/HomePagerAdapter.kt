@@ -1,13 +1,13 @@
-package com.challenge.kippo.ui.main
+package com.challenge.kippo.ui.main.adapters
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
-import com.challenge.kippo.fragments.FavoriteFragment
-import com.challenge.kippo.fragments.SearchFragment
-import com.challenge.kippo.fragments.TrendingFragment
+import com.challenge.kippo.ui.fragments.FavoriteFragment
+import com.challenge.kippo.ui.fragments.SearchFragment
+import com.challenge.kippo.ui.fragments.TrendingFragment
 
 class HomePagerAdapter(private val context: Context, fm: FragmentManager?) : FragmentStatePagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private var modified: Class<out Fragment>? = null

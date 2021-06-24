@@ -1,12 +1,12 @@
 package com.challenge.kippo.backend.view_model
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.challenge.kippo.backend.Repository
 import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.api.responses.Auth
-import com.challenge.kippo.backend.storage.entities.GameData
+import com.challenge.kippo.backend.database.LocalDatabase
+import com.challenge.kippo.backend.database.entities.GameData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -24,7 +24,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
     init{
         if (!::repository.isInitialized){
-            repository = Repository(application, ClientManager(application))
+            repository = Repository(LocalDatabase.invoke(application), ClientManager(application))
         }
     }
     /**

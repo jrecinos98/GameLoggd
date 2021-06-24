@@ -1,4 +1,4 @@
-package com.challenge.kippo.backend.storage.entities
+package com.challenge.kippo.backend.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.challenge.kippo.TestData.validateResponse
 import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.api.RetrofitBuilder
 import com.challenge.kippo.backend.api.SessionManager
@@ -28,22 +29,7 @@ class ClientTests {
     lateinit var context: Context
     lateinit var clientManager : ClientManager
     lateinit var sessionManager: SessionManager
-    /**
-     * Validates basic properties of a valid response object
-     * @param response The response recieved from server. Any Response<T> will be allowed
-     * @return True if valid , false if it fails any of the other conditions.
-     */
-    //TODO figure out how to allow this method to be shared by both test suites
-    fun <T> validateResponse(response : Response<T>?){
-        when{
-            response == null        -> assert(false){"HTTP response is null"}
-            response.code()!= Constants.API.Codes.OK ->
-                assert(false){"HTTP ERROR: ${response.code()}"}
-            !response.isSuccessful  -> assert(false){"HTTP request failed"}
-            response.body() == null -> assert(false){"HTTP response body is null"}
-            else -> true
-        }
-    }
+
     @Before
     fun setUp(){
         context = InstrumentationRegistry.getInstrumentation().targetContext

@@ -1,19 +1,16 @@
 package com.challenge.kippo.backend
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.api.responses.Auth
 import com.challenge.kippo.backend.api.responses.Cover
 import com.challenge.kippo.backend.api.responses.Game
 import com.challenge.kippo.backend.api.responses.Genre
-import com.challenge.kippo.backend.storage.LocalDatabase
-import com.challenge.kippo.backend.storage.daos.GameDao
-import com.challenge.kippo.backend.storage.entities.GameData
-import com.challenge.kippo.util.Constants
+import com.challenge.kippo.backend.database.LocalDatabase
+import com.challenge.kippo.backend.database.daos.GameDao
+import com.challenge.kippo.backend.database.entities.GameData
 import com.challenge.kippo.util.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -22,9 +19,9 @@ import retrofit2.Call
 import java.lang.Exception
 
 
-class Repository (private val context: Context, private val clientManager: ClientManager)  {
+class Repository (private val database: LocalDatabase, private val clientManager: ClientManager)  {
 
-    private val gameDao: GameDao = LocalDatabase.invoke(context).gameDao()
+    private val gameDao: GameDao = database.gameDao()
     //TODO May be a good idea to move these to the clientManager
     private var searchResults = MutableLiveData<Result<List<GameData>>>()
     private var trendingResults = MutableLiveData<Result<List<GameData>>>()

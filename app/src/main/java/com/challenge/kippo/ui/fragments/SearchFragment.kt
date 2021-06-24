@@ -1,4 +1,4 @@
-package com.challenge.kippo.fragments
+package com.challenge.kippo.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -16,9 +16,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.databinding.FragmentSearchBinding
-import com.challenge.kippo.ui.main.GameCardAdapter
+import com.challenge.kippo.ui.main.adapters.GameCardAdapter
 import com.challenge.kippo.util.Result
-import dagger.hilt.android.AndroidEntryPoint
 
 
 //@AndroidEntryPoint

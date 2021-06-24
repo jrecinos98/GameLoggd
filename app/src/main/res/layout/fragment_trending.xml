@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.TrendingFragment">
+    tools:context=".ui.fragments.TrendingFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -23,7 +23,7 @@
             android:id="@+id/trending_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/favoriteTitle"
+            android:text="@string/trendingTitle"
             android:gravity="center_vertical"
             style="@style/Toolbar.Title"
             app:drawableLeftCompat="@drawable/ic_trending"

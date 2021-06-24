@@ -1,31 +1,24 @@
 package com.challenge.kippo
 
 import android.content.Context
-import android.content.DialogInterface
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.os.Message
 import android.view.Gravity
-import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.viewpager.widget.ViewPager
-import com.challenge.kippo.backend.Repository
-import com.challenge.kippo.backend.api.ClientManager
 import com.challenge.kippo.backend.view_model.MainViewModel
 import com.challenge.kippo.backend.view_model.ViewModelFactory
 import com.challenge.kippo.databinding.ActivityMainBinding
-import com.challenge.kippo.ui.main.HomePagerAdapter
+import com.challenge.kippo.ui.main.adapters.HomePagerAdapter
 import com.challenge.kippo.util.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import dagger.hilt.android.AndroidEntryPoint
 
 //@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
