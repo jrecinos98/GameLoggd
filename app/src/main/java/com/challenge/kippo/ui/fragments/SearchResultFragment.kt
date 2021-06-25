@@ -20,7 +20,8 @@ import com.challenge.kippo.util.Constants
  * @param gameCardAdapter Adapter to be used for the Recyclerview if successful
  */
 //@AndroidEntryPoint
-class SearchResultFragment(private val gameCardAdapter: GameCardAdapter? = null) : Fragment() {
+//TODO Split this up. It's more trouble than it is worth to combine the two
+class SearchResultFragment(private var gameCardAdapter: GameCardAdapter? = null) : Fragment() {
     private lateinit var searchBinding: FragmentSearchSuccessBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +56,9 @@ class SearchResultFragment(private val gameCardAdapter: GameCardAdapter? = null)
                                    savedInstanceState: Bundle?): View {
             return FragmentSearchFailedBinding.inflate(inflater,container, false).root
         }
+    }
+    fun setAdapter(adapter: GameCardAdapter){
+        this.gameCardAdapter = adapter
     }
 
     companion object {

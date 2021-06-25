@@ -52,7 +52,7 @@ class SearchFragment : Fragment() {
             searchBinding.textField.imeOptions = EditorInfo.IME_ACTION_GO
         }
         searchBinding.searchCancel.setOnClickListener(onCancelSearch())
-        updateFragment("success")
+        updateFragment(SUCCESS_FRAG_TAG)
         observeSearchResults()
         return searchBinding.root
     }
@@ -93,15 +93,27 @@ class SearchFragment : Fragment() {
      */
     private fun updateFragment(tag: String) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-        val newFrag : Fragment = childFragmentManager.findFragmentByTag(tag)
+        //TODO Not sure if recreating the fragment every time is a good idea.
+        val newFrag : Fragment = if(tag == SUCCESS_FRAG_TAG){
+            SearchResultFragment(gameCardAdapter)
+        } else{
+            SearchResultFragment()
+        }
+        // Replace the contents of the container with the new fragment, add to stack and commit the transaction
+        ft.replace(searchBinding.searchResultFragment.id, newFrag, tag).addToBackStack(null).commit()
+    }
+    //FIXME When configuration changes occur the SearchResultFragment is recreated and the adapter is null
+    // Therefore it will always display the SearchFail fragment and never updates if we use the ones stored
+    // by the Fragment manager
+    private fun findFragment(tag : String) : Fragment{
+        val fragment = childFragmentManager.findFragmentByTag(tag)
             ?: if(tag == SUCCESS_FRAG_TAG){
                 SearchResultFragment(gameCardAdapter)
             } else{
                 SearchResultFragment()
             }
-        Log.d("SEARCH_FRAG", newFrag.javaClass.toString())
-        // Replace the contents of the container with the new fragment, add to stack and commit the transaction
-        ft.replace(searchBinding.searchResultFragment.id, newFrag, tag).addToBackStack(null).commit()
+        (fragment as SearchResultFragment).setAdapter(gameCardAdapter)
+        return fragment
     }
 
     /**
@@ -115,21 +127,22 @@ class SearchFragment : Fragment() {
                 when (resource.status) {
                     Result.Status.SUCCESS -> {
                         searchBinding.searchProgressbar.visibility = View.GONE
-                        resource.data?.let { list ->
-                            Log.d("SEARCH_FRAG", list.toString())
-                            if (list.isEmpty())
-                                updateFragment(FAILED_FRAG_TAG)
-                            else {
-                                val inputManager: InputMethodManager =
-                                    requireContext().getSystemService(
-                                        Context.INPUT_METHOD_SERVICE
-                                    ) as InputMethodManager
-                                inputManager.hideSoftInputFromWindow(
-                                    requireActivity().currentFocus?.windowToken,
-                                    InputMethodManager.HIDE_NOT_ALWAYS
-                                )
-                                updateFragment(SUCCESS_FRAG_TAG)
-                                gameCardAdapter.setGames(list)
+                        if(resource.status == Result.Status.SUCCESS) {
+                            resource.data?.let { list ->
+                                if (list.isEmpty()) {
+                                    updateFragment(FAILED_FRAG_TAG)
+                                } else {
+                                    val inputManager: InputMethodManager =
+                                        requireContext().getSystemService(
+                                            Context.INPUT_METHOD_SERVICE
+                                        ) as InputMethodManager
+                                    inputManager.hideSoftInputFromWindow(
+                                        requireActivity().currentFocus?.windowToken,
+                                        InputMethodManager.HIDE_NOT_ALWAYS
+                                    )
+                                    gameCardAdapter.setGames(list)
+                                    updateFragment(SUCCESS_FRAG_TAG)
+                                }
                             }
                         }
                     }

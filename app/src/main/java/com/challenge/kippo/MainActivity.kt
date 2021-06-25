@@ -124,9 +124,6 @@ class MainActivity : AppCompatActivity() {
              * asset can be updated to the selected state.
              */
             override fun onPageSelected(position: Int) {
-                //If the User scrolls rather than clicking on navigation icon we want to
-                //mark the icon that corresponds to the scrolled page as checked so the icon
-                //asset can be updated to the selected state.
                 when(position){
                     HomePagerAdapter.TRENDING_FRAG_INDEX -> {
                         mainActivityBinding
