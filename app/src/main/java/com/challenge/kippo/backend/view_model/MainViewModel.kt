@@ -145,6 +145,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Searches through trending games and unfavorites the one that has the same id
+     * @param id The id of the game to unfavorite
+     */
     private fun unFavoriteTrendingGame(id : Int){
         val trendingGameList = trendingResults.value?.data
         if(trendingGameList != null) {
@@ -152,11 +156,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if (trendingGame.id == id){
                     trendingGame.favorited = false
                     trendingResults.postValue(Result.success(data = trendingGameList))
+                    break
                 }
             }
         }
     }
 
+    /**
+     * Searches the searched game list and unfavorites the game matching the given id
+     * @param id The id of the game to unfavorite
+     */
     private fun unFavoriteSearchedGame(id : Int){
         val searchGameList = searchResults.value?.data
         if(searchGameList != null) {
@@ -164,6 +173,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if (searchGame.id == id){
                     searchGame.favorited = false
                     searchResults.postValue(Result.success(data = searchGameList))
+                    break
                 }
             }
         }
