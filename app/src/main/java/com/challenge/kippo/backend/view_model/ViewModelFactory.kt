@@ -12,7 +12,7 @@ import com.challenge.kippo.backend.database.LocalDatabase
 
 class ViewModelFactory(private val application: Application) :  ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         Log.d("CREATING_FRAG", "creating frag")
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             val repository = Repository(LocalDatabase.invoke(application),ClientManager(application))

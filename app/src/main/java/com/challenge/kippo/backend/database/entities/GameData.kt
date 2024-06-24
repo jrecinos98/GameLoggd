@@ -21,7 +21,6 @@ data class GameData(
     @ColumnInfo(name= "genre")
     var genre      : String,
     @ColumnInfo(name= "rating")
-    @JvmField //Signals to compiler that we will implement getter and setter ourselves
     private var actualRating : Double
     ){
     @Ignore //Not saved into database. Only for use to display in UI

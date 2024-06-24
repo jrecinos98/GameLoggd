@@ -15,10 +15,9 @@
         android:theme="@style/Theme.KippoChallenge">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
             android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="sensor"
-            android:theme="@style/Theme.KippoChallenge.NoActionBar">
+            android:theme="@style/Theme.KippoChallenge.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
